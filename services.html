@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services — Neon Narrative</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+    :root {
+      --dark-surface:        oklch(6% 0.006 70);
+      --dark-surface-raised: oklch(10% 0.007 70);
+      --dark-surface-deeper: oklch(3% 0.004 70);
+      --light-surface:       oklch(10% 0.007 70);
+      --accent:              oklch(82% 0.22 135);
+      --text-on-dark:        oklch(95% 0.005 80);
+      --text-on-dark-muted:  oklch(52% 0.008 75);
+      --text-on-light:       oklch(95% 0.005 80);
+      --text-on-light-muted: oklch(52% 0.008 75);
+      --divider-dark:        oklch(16% 0.009 70);
+      --divider-light:       oklch(16% 0.009 70);
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'Inter', sans-serif;
+      --section-pad-v:  120px;
+      --max-w: 1200px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-on-dark);
+      background: var(--dark-surface);
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: 40px;
+    }
+
+    .tag {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .section-headline {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(32px, 4vw, 48px);
+      letter-spacing: -0.02em;
+      line-height: 1.28;
+      padding-bottom: 0.14em;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 15px;
+      background: var(--accent);
+      color: var(--dark-surface);
+      padding: 12px 28px;
+      border-radius: 4px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px oklch(82% 0.22 135 / 0.35);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 20px 0;
+      transition: background 300ms ease-out, border-color 300ms ease-out;
+      border-bottom: 1px solid transparent;
+    }
+    #nav.scrolled {
+      background: var(--dark-surface-deeper);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: var(--divider-dark);
+      padding: 14px 0;
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; }
+    .nav-wordmark {
+      font-family: var(--font-display); font-weight: 800; font-size: 20px;
+      color: var(--text-on-dark); text-decoration: none; letter-spacing: -0.01em;
+    }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-family: var(--font-body); font-weight: 500; font-size: 14px;
+      color: var(--text-on-dark-muted); text-decoration: none; transition: color 150ms;
+    }
+    .nav-links a:hover { color: var(--text-on-dark); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px; z-index: 1100;
+    }
+    .nav-hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--text-on-dark); border-radius: 2px;
+      transition: transform 300ms ease, opacity 300ms ease;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-overlay {
+      display: none; position: fixed; inset: 0;
+      background: var(--dark-surface); z-index: 1050;
+      flex-direction: column; align-items: center; justify-content: center; gap: 36px;
+    }
+    .nav-overlay.open { display: flex; }
+    .nav-overlay a {
+      font-family: var(--font-display); font-weight: 700; font-size: 32px;
+      color: var(--text-on-dark); text-decoration: none; letter-spacing: -0.02em;
+    }
+    .nav-overlay a:hover { color: var(--accent); }
+
+    /* ── HERO ────────────────────────────────────────────────── */
+    #hero {
+      min-height: 60vh; background: var(--dark-surface);
+      display: flex; align-items: center;
+      padding-top: 100px; padding-bottom: 80px;
+    }
+    .hero-headline {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(40px, 5vw, 64px);
+      letter-spacing: -0.03em; line-height: 1.2;
+      color: var(--text-on-dark); margin-bottom: 20px; max-width: 800px;
+      padding-bottom: 0.14em;
+    }
+    .hero-sub {
+      font-family: var(--font-body); font-weight: 500; font-size: 19px;
+      line-height: 1.6; color: var(--text-on-dark-muted); max-width: 560px;
+    }
+
+    /* ── QUIZ ────────────────────────────────────────────────── */
+    #quiz {
+      background: var(--light-surface);
+      padding: var(--section-pad-v) 0;
+    }
+    .quiz-header { margin-bottom: 48px; }
+    .quiz-header .section-headline { color: var(--text-on-light); }
+    .quiz-sub { font-size: 18px; color: var(--text-on-light-muted); margin-top: 12px; }
+
+    .quiz-card {
+      background: var(--dark-surface); border-radius: 12px;
+      padding: 40px; max-width: 680px; margin-inline: auto;
+    }
+
+    .quiz-progress {
+      font-family: var(--font-body); font-weight: 600; font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-on-dark-muted); margin-bottom: 28px;
+    }
+    .quiz-progress span { color: var(--accent); }
+
+    .quiz-step { display: none; }
+    .quiz-step.active {
+      display: block;
+      animation: fadeIn 200ms ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .quiz-question {
+      font-family: var(--font-display); font-weight: 700; font-size: 22px;
+      color: var(--text-on-dark); letter-spacing: -0.01em;
+      margin-bottom: 24px; line-height: 1.35;
+      padding-bottom: 0.1em;
+    }
+
+    .quiz-option {
+      display: block; width: 100%;
+      border: 1px solid var(--divider-dark); background: transparent;
+      border-radius: 6px; padding: 14px 18px;
+      font-family: var(--font-body); font-weight: 500; font-size: 15px;
+      color: var(--text-on-dark-muted); text-align: left; cursor: pointer;
+      margin-bottom: 10px;
+      transition: border-color 150ms, color 150ms, background 150ms;
+    }
+    .quiz-option:last-child { margin-bottom: 0; }
+    .quiz-option:hover { border-color: var(--accent); color: var(--text-on-dark); }
+    .quiz-option.selected {
+      background: oklch(82% 0.22 135 / 0.12);
+      border-color: var(--accent);
+      color: var(--text-on-dark);
+    }
+    .quiz-option:focus { outline: none; border-color: var(--accent); }
+
+    .quiz-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 28px;
+    }
+
+    .quiz-back {
+      font-family: var(--font-body); font-weight: 500; font-size: 14px;
+      color: var(--text-on-dark-muted); background: none; border: none;
+      cursor: pointer; transition: color 150ms; padding: 0;
+    }
+    .quiz-back:hover { color: var(--text-on-dark); }
+
+    .quiz-next {
+      font-family: var(--font-body); font-weight: 600; font-size: 14px;
+      background: var(--accent); color: var(--dark-surface);
+      padding: 10px 24px; border-radius: 4px; border: none;
+      cursor: pointer; transition: transform 150ms, box-shadow 150ms;
+      display: none;
+    }
+    .quiz-next.visible { display: block; }
+    .quiz-next:hover { transform: translateY(-1px); box-shadow: 0 4px 16px oklch(82% 0.22 135 / 0.35); }
+
+    /* Quiz Result */
+    .quiz-result {
+      display: none; text-align: center;
+      animation: fadeIn 300ms ease-out forwards;
+    }
+    .quiz-result.show { display: block; }
+
+    .quiz-score-num {
+      font-family: var(--font-display); font-weight: 800; font-size: 72px;
+      color: var(--accent); letter-spacing: -0.04em; line-height: 1;
+      margin-bottom: 16px; display: block;
+    }
+
+    .quiz-result-tag {
+      display: inline-block;
+      font-family: var(--font-body); font-weight: 600; font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--accent); border: 1px solid var(--accent);
+      border-radius: 100px; padding: 5px 14px; margin-bottom: 20px;
+    }
+
+    .quiz-result-text {
+      font-family: var(--font-body); font-size: 17px;
+      color: var(--text-on-dark-muted); line-height: 1.7;
+      max-width: 440px; margin-inline: auto; margin-bottom: 28px;
+    }
+
+    .quiz-restart {
+      display: inline-block; font-family: var(--font-body); font-weight: 500;
+      font-size: 13px; color: var(--text-on-dark-muted);
+      background: none; border: none; cursor: pointer;
+      text-decoration: underline; margin-top: 16px;
+      transition: color 150ms;
+    }
+    .quiz-restart:hover { color: var(--text-on-dark); }
+
+    /* ── SERVICE ROWS ─────────────────────────────────────────── */
+    .services-section {
+      padding: var(--section-pad-v) 0;
+    }
+    .services-section.dark  { background: var(--dark-surface); }
+    .services-section.light { background: var(--light-surface); }
+
+    .section-intro {
+      font-family: var(--font-body); font-weight: 500; font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .dark  .section-intro { color: var(--text-on-dark-muted); }
+    .light .section-intro { color: var(--text-on-light-muted); }
+
+    .dark  .section-headline { color: var(--text-on-dark); }
+    .light .section-headline { color: var(--text-on-light); }
+
+    .services-header { margin-bottom: 48px; }
+
+    .service-row {
+      border-bottom: 1px solid;
+      cursor: pointer;
+      transition: background 200ms;
+    }
+    .dark  .service-row { border-color: var(--divider-dark); }
+    .light .service-row { border-color: var(--divider-light); }
+    .dark  .service-row:hover { background: oklch(12% 0.008 70); }
+    .light .service-row:hover { background: oklch(12% 0.008 70); }
+
+    .service-row-main {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      gap: 24px;
+      padding: 28px 0;
+    }
+
+    .service-num {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 18px; color: var(--accent); letter-spacing: -0.01em;
+    }
+
+    .service-name {
+      font-family: var(--font-display); font-weight: 700; font-size: 22px;
+      letter-spacing: -0.01em; display: block; margin-bottom: 4px;
+      line-height: 1.3; padding-bottom: 0.06em;
+    }
+    .dark  .service-name { color: var(--text-on-dark); }
+    .light .service-name { color: var(--text-on-light); }
+
+    .service-oneliner {
+      font-family: var(--font-body); font-size: 16px; line-height: 1.5;
+    }
+    .dark  .service-oneliner { color: var(--text-on-dark-muted); }
+    .light .service-oneliner { color: var(--text-on-light-muted); }
+
+    .service-toggle {
+      font-family: var(--font-body); font-weight: 400; font-size: 22px;
+      color: var(--accent); line-height: 1; user-select: none;
+      transition: transform 200ms; flex-shrink: 0; width: 24px; text-align: center;
+    }
+    .service-row.open .service-toggle { transform: rotate(45deg); }
+
+    .service-expand {
+      max-height: 0; overflow: hidden;
+      transition: max-height 350ms cubic-bezier(0.22, 1, 0.36, 1),
+                  padding 350ms cubic-bezier(0.22, 1, 0.36, 1);
+      padding: 0 72px 0 72px;
+    }
+    .service-row.open .service-expand {
+      max-height: 300px;
+      padding: 0 72px 28px 72px;
+    }
+
+    .expand-problem, .expand-fix {
+      font-family: var(--font-body); font-size: 15px; line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .expand-problem:last-child, .expand-fix:last-child { margin-bottom: 0; }
+    .dark  .expand-problem, .dark  .expand-fix { color: var(--text-on-dark-muted); }
+    .light .expand-problem, .light .expand-fix { color: var(--text-on-light-muted); }
+
+    .expand-label {
+      font-weight: 600; font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--accent); margin-right: 8px;
+    }
+
+    /* ── FINAL CTA ───────────────────────────────────────────── */
+    #cta-final {
+      background: var(--light-surface);
+      padding: var(--section-pad-v) 0;
+      text-align: center;
+    }
+    .cta-final-inner { max-width: 600px; margin-inline: auto; }
+    .cta-final-inner .section-headline { color: var(--text-on-light); }
+    .cta-sub {
+      font-size: 18px; color: var(--text-on-light-muted);
+      margin-top: 16px; line-height: 1.65;
+    }
+    .cta-final-inner .btn-primary { margin-top: 32px; }
+
+    /* ── FOOTER ──────────────────────────────────────────────── */
+    #footer { background: var(--dark-surface-deeper); padding: 40px 0 32px; }
+    .footer-main {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 24px;
+    }
+    .footer-wordmark {
+      font-family: var(--font-display); font-weight: 800; font-size: 18px;
+      color: var(--text-on-dark); text-decoration: none;
+    }
+    .footer-links { display: flex; gap: 28px; list-style: none; }
+    .footer-links a {
+      font-family: var(--font-body); font-weight: 500; font-size: 14px;
+      color: var(--text-on-dark-muted); text-decoration: none; transition: color 150ms;
+    }
+    .footer-links a:hover { color: var(--text-on-dark); }
+    .footer-bottom {
+      margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--divider-dark);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .footer-copy {
+      text-align: center; font-family: var(--font-body); font-size: 13px;
+      color: var(--text-on-dark-muted); margin: 0;
+    }
+    .footer-socials { display: flex; align-items: center; gap: 12px; }
+    .social-link {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px;
+      border: 1px solid var(--divider-dark); border-radius: 50%;
+      color: var(--text-on-dark-muted); text-decoration: none;
+      transition: color 200ms ease, border-color 200ms ease, transform 200ms ease, background 200ms ease;
+    }
+    .social-link:hover {
+      color: var(--accent); border-color: var(--accent);
+      background: oklch(82% 0.22 135 / 0.08); transform: translateY(-2px);
+    }
+    .social-link svg { width: 16px; height: 16px; fill: currentColor; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 767px) {
+      .container { padding-inline: 24px; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      #hero { padding-top: 120px; }
+
+      .service-row-main {
+        grid-template-columns: auto 1fr auto;
+        gap: 14px;
+      }
+      .service-expand { padding-left: 0; padding-right: 0; }
+      .service-row.open .service-expand { padding-left: 0; padding-right: 0; }
+
+      .quiz-card { padding: 28px 20px; }
+
+      .footer-main { flex-direction: column; align-items: center; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+      .footer-bottom { flex-direction: column; gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────────── -->
+  <header id="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-wordmark">Neon Narrative</a>
+      <ul class="nav-links">
+        <li><a href="services.html" class="active">Services</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" class="btn-primary" style="padding:8px 20px;">Book a Session</a></li>
+      </ul>
+      <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="nav-overlay" id="nav-overlay">
+    <a href="services.html"    class="overlay-link">Services</a>
+    <a href="how-it-works.html" class="overlay-link">How It Works</a>
+    <a href="about.html"       class="overlay-link">About</a>
+    <a href="contact.html" class="btn-primary overlay-link">Book a Session</a>
+  </nav>
+
+  <!-- ── HERO ────────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="container">
+      <span class="tag reveal">What We Offer</span>
+      <h1 class="hero-headline reveal">Every Service We Offer Starts With Your Problem.</h1>
+      <p class="hero-sub reveal">We don't lead with packages. We ask the right questions, find where your business is losing time or revenue, and match it to a solution that delivers results.</p>
+    </div>
+  </section>
+
+  <!-- ── AI READINESS QUIZ ────────────────────────────────────── -->
+  <section id="quiz">
+    <div class="container">
+      <div class="quiz-header">
+        <span class="tag reveal">Free Assessment</span>
+        <h2 class="section-headline reveal">How AI-Ready Is Your Business?</h2>
+        <p class="quiz-sub reveal">Answer 6 quick questions. Get your score and a personalised recommendation.</p>
+      </div>
+
+      <div class="quiz-card reveal">
+        <!-- Progress -->
+        <p class="quiz-progress" id="quizProgress">Question <span id="qNum">1</span> of 6</p>
+
+        <!-- Questions (all hidden except active) -->
+        <div class="quiz-step active" data-step="0">
+          <p class="quiz-question">How quickly do you respond to new leads?</p>
+          <button class="quiz-option" data-score="3">Within minutes (automated)</button>
+          <button class="quiz-option" data-score="2">Within a few hours</button>
+          <button class="quiz-option" data-score="1">Same day</button>
+          <button class="quiz-option" data-score="0">Often delayed or missed</button>
+        </div>
+
+        <div class="quiz-step" data-step="1">
+          <p class="quiz-question">How do you currently follow up with leads?</p>
+          <button class="quiz-option" data-score="3">Fully automated sequences</button>
+          <button class="quiz-option" data-score="2">Manual emails or calls</button>
+          <button class="quiz-option" data-score="1">We follow up once, maybe twice</button>
+          <button class="quiz-option" data-score="0">We don't have a follow-up process</button>
+        </div>
+
+        <div class="quiz-step" data-step="2">
+          <p class="quiz-question">Does your team spend time on repetitive admin or data entry?</p>
+          <button class="quiz-option" data-score="3">Yes, daily — it's a real drain</button>
+          <button class="quiz-option" data-score="2">Sometimes, but it's manageable</button>
+          <button class="quiz-option" data-score="1">Rarely</button>
+          <button class="quiz-option" data-score="0">No, we've already automated this</button>
+        </div>
+
+        <div class="quiz-step" data-step="3">
+          <p class="quiz-question">Do you have a clear real-time view of your business KPIs?</p>
+          <button class="quiz-option" data-score="3">Yes, always — live dashboards</button>
+          <button class="quiz-option" data-score="2">Mostly, but it takes effort to pull together</button>
+          <button class="quiz-option" data-score="1">Rarely — we check manually</button>
+          <button class="quiz-option" data-score="0">No visibility at all</button>
+        </div>
+
+        <div class="quiz-step" data-step="4">
+          <p class="quiz-question">How would you rate your current website?</p>
+          <button class="quiz-option" data-score="3">Modern, fast, and converting well</button>
+          <button class="quiz-option" data-score="2">Decent but could be better</button>
+          <button class="quiz-option" data-score="1">Outdated and slow</button>
+          <button class="quiz-option" data-score="0">We don't have one</button>
+        </div>
+
+        <div class="quiz-step" data-step="5">
+          <p class="quiz-question">Are you running any digital ads or SEO?</p>
+          <button class="quiz-option" data-score="3">Yes — both, actively managed</button>
+          <button class="quiz-option" data-score="2">One of them, inconsistently</button>
+          <button class="quiz-option" data-score="1">Neither</button>
+          <button class="quiz-option" data-score="0">Not sure what we have</button>
+        </div>
+
+        <!-- Result (hidden until quiz complete) -->
+        <div class="quiz-result" id="quizResult">
+          <span class="quiz-score-num" id="resultScore">0</span>
+          <span class="quiz-result-tag" id="resultTag">—</span>
+          <p class="quiz-result-text" id="resultText"></p>
+          <a href="contact.html" class="btn-primary">Book a Strategy Call</a>
+          <br>
+          <button class="quiz-restart" id="quizRestartBtn">Retake the assessment</button>
+        </div>
+
+        <!-- Navigation -->
+        <div class="quiz-nav" id="quizNav">
+          <button class="quiz-back" id="quizBack" style="visibility:hidden;">← Back</button>
+          <button class="quiz-next" id="quizNext">Next →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AI AUTOMATION ─────────────────────────────────────────── -->
+  <section class="services-section dark">
+    <div class="container">
+      <div class="services-header">
+        <p class="section-intro reveal">Stop Doing Manually What Software Can Handle in Seconds</p>
+        <span class="tag reveal">AI Automation</span>
+        <h2 class="section-headline reveal">AI Automation</h2>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">01</span>
+          <div>
+            <span class="service-name">Speed to Lead</span>
+            <p class="service-oneliner">Instant, AI-powered responses the moment someone reaches out — day or night.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-problem"><span class="expand-label">Problem</span>A new lead comes in. Your team is busy. They respond hours later. The lead already booked with a competitor.</p>
+          <p class="expand-fix"><span class="expand-label">Fix</span>Instant, AI-powered responses the moment someone reaches out — day or night, no manual effort required.</p>
+        </div>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">02</span>
+          <div>
+            <span class="service-name">Follow-up &amp; Nurture Sequences</span>
+            <p class="service-oneliner">Automated follow-ups that keep your business top of mind until the lead is ready to move.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-problem"><span class="expand-label">Problem</span>Most leads don't convert on the first touch. Most businesses stop following up after two attempts.</p>
+          <p class="expand-fix"><span class="expand-label">Fix</span>Automated follow-up sequences that keep your business top of mind until the lead is ready to move.</p>
+        </div>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">03</span>
+          <div>
+            <span class="service-name">Database Reactivation</span>
+            <p class="service-oneliner">Turn dormant contacts and old data into new revenue with automated campaigns.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-problem"><span class="expand-label">Problem</span>You have hundreds of past leads and old customers sitting in a spreadsheet doing nothing.</p>
+          <p class="expand-fix"><span class="expand-label">Fix</span>Automated campaigns that re-engage dormant contacts and turn old data into new revenue.</p>
+        </div>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">04</span>
+          <div>
+            <span class="service-name">Document Processing</span>
+            <p class="service-oneliner">Automated document workflows that capture, sort, and route information without human input.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-problem"><span class="expand-label">Problem</span>Your team spends hours on data entry, form handling, and manual document workflows.</p>
+          <p class="expand-fix"><span class="expand-label">Fix</span>Automated document processing that captures, sorts, and routes information without human input.</p>
+        </div>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">05</span>
+          <div>
+            <span class="service-name">Internal Reporting &amp; Notifications</span>
+            <p class="service-oneliner">Automated alerts and reports delivered to the right people at the right time — without asking.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-problem"><span class="expand-label">Problem</span>Your team wastes time chasing updates, checking in, and compiling reports manually.</p>
+          <p class="expand-fix"><span class="expand-label">Fix</span>Automated alerts and reports delivered to the right people at the right time — without anyone having to ask.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DIGITAL PRESENCE ──────────────────────────────────────── -->
+  <section class="services-section light">
+    <div class="container">
+      <div class="services-header">
+        <p class="section-intro reveal">Your customers are looking. Make sure they find you.</p>
+        <span class="tag reveal">Digital Presence</span>
+        <h2 class="section-headline reveal">Digital Presence</h2>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">01</span>
+          <div>
+            <span class="service-name">Website Redesign</span>
+            <p class="service-oneliner">Modern, fast, mobile-optimised websites built to convert visitors into inquiries.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-fix">A slow, outdated website doesn't just look bad — it loses you customers. We build modern, fast, mobile-optimised websites designed to convert visitors into inquiries.</p>
+        </div>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">02</span>
+          <div>
+            <span class="service-name">SEO</span>
+            <p class="service-oneliner">Build your organic search presence so the right customers find you without paid ads every month.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-fix">Ranking on Google isn't luck — it's a system. We build your organic search presence so the right customers find you without paid ads every month.</p>
+        </div>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">03</span>
+          <div>
+            <span class="service-name">Google Business Profile</span>
+            <p class="service-oneliner">Appear at the top when nearby customers search for what you offer.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-fix">For local businesses, your Google profile is your most visible real estate. We optimise it so you appear at the top when nearby customers search for what you offer.</p>
+        </div>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">04</span>
+          <div>
+            <span class="service-name">Online Ads</span>
+            <p class="service-oneliner">Targeted Google and social campaigns built around your ideal customer — not guesswork.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-fix">When you need results now, paid ads deliver. We run targeted Google and social campaigns built around your ideal customer — not guesswork.</p>
+        </div>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">05</span>
+          <div>
+            <span class="service-name">Analytics Reports</span>
+            <p class="service-oneliner">Clear, plain-language reporting on what's driving results and what's wasting budget.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-fix">Clear, plain-language reporting on what's driving results and what's wasting budget. The insights you need to make better decisions — nothing more.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GROWTH & SYSTEMS ──────────────────────────────────────── -->
+  <section class="services-section dark">
+    <div class="container">
+      <div class="services-header">
+        <p class="section-intro reveal">Operate with clarity. Scale with confidence.</p>
+        <span class="tag reveal">Growth &amp; Systems</span>
+        <h2 class="section-headline reveal">Growth &amp; Systems</h2>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">01</span>
+          <div>
+            <span class="service-name">Professional Dashboards</span>
+            <p class="service-oneliner">Your leads, revenue, performance, and pipeline — all in real time, in one place.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-fix">A custom dashboard that shows you exactly what's happening in your business — leads, revenue, performance, pipeline — all in real time, in one place.</p>
+        </div>
+      </div>
+
+      <div class="service-row reveal" onclick="toggleRow(this)">
+        <div class="service-row-main">
+          <span class="service-num">02</span>
+          <div>
+            <span class="service-name">Product Development</span>
+            <p class="service-oneliner">Custom tools, internal systems, and client-facing digital products — scoped to your problem, built to last.</p>
+          </div>
+          <span class="service-toggle">+</span>
+        </div>
+        <div class="service-expand">
+          <p class="expand-fix">If your business needs a custom tool, internal system, or client-facing digital product, we build it. Scoped to your problem. Built to last.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FINAL CTA ─────────────────────────────────────────────── -->
+  <section id="cta-final">
+    <div class="container">
+      <div class="cta-final-inner">
+        <h2 class="section-headline reveal">Not Sure Which Service Fits?</h2>
+        <p class="cta-sub reveal">That's exactly why we start with a conversation — not a quote.</p>
+        <a href="contact.html" class="btn-primary reveal">Book a Free Strategy Call</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────── -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-main">
+        <a href="index.html" class="footer-wordmark">Neon Narrative</a>
+        <ul class="footer-links">
+          <li><a href="services.html">Services</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+        <a href="contact.html" class="btn-primary" style="padding:8px 20px;">Book a Session</a>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2025 Neon Narrative. All rights reserved.</p>
+        <div class="footer-socials">
+          <a href="https://www.linkedin.com/in/neon-narrative-640b92405" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="social-link">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/neonnarrativemedia" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-link">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.25.07 1.62.07 4.81s0 3.56-.07 4.81c-.15 3.22-1.66 4.77-4.92 4.92-1.25.06-1.62.07-4.85.07s-3.6 0-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.07-1.25-.07-1.62-.07-4.81s0-3.56.07-4.81C3.23 3.96 4.74 2.42 8 2.27 9.25 2.21 9.62 2.2 12 2.2zm0 1.8c-3.17 0-3.55.01-4.78.07-2.4.11-3.51 1.24-3.62 3.62-.06 1.23-.07 1.6-.07 4.71s.01 3.48.07 4.71c.11 2.39 1.22 3.51 3.62 3.62 1.23.06 1.61.07 4.78.07s3.55-.01 4.78-.07c2.4-.11 3.51-1.23 3.62-3.62.06-1.23.07-1.6.07-4.71s-.01-3.48-.07-4.71c-.11-2.39-1.22-3.51-3.62-3.62C15.55 4.01 15.17 4 12 4zm0 3.07A4.93 4.93 0 1 1 7.07 12 4.93 4.93 0 0 1 12 7.07zm0 8.13A3.2 3.2 0 1 0 8.8 12 3.2 3.2 0 0 0 12 15.2zm6.4-8.33a1.15 1.15 0 1 1-1.15-1.15 1.15 1.15 0 0 1 1.15 1.15z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Nav scroll ──────────────────────────────────────────── */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 80);
+    }, { passive: true });
+
+    /* ── Hamburger ───────────────────────────────────────────── */
+    const hamburger  = document.getElementById('hamburger');
+    const navOverlay = document.getElementById('nav-overlay');
+    hamburger.addEventListener('click', () => {
+      const open = navOverlay.classList.toggle('open');
+      hamburger.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    document.querySelectorAll('.overlay-link').forEach(l => l.addEventListener('click', () => {
+      navOverlay.classList.remove('open');
+      hamburger.classList.remove('open');
+      document.body.style.overflow = '';
+    }));
+
+    /* ── Scroll reveal ───────────────────────────────────────── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const siblings = Array.from(entry.target.parentElement.querySelectorAll(':scope > .reveal'));
+        const idx = siblings.indexOf(entry.target);
+        setTimeout(() => entry.target.classList.add('visible'), idx * 80);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ── Service row expand/collapse ─────────────────────────── */
+    function toggleRow(row) {
+      row.classList.toggle('open');
+    }
+
+    /* ── Quiz logic ──────────────────────────────────────────── */
+    const steps     = document.querySelectorAll('.quiz-step');
+    const progressEl = document.getElementById('qNum');
+    const nextBtn   = document.getElementById('quizNext');
+    const backBtn   = document.getElementById('quizBack');
+    const quizNav   = document.getElementById('quizNav');
+    const resultEl  = document.getElementById('quizResult');
+    const quizCard  = document.querySelector('.quiz-card');
+
+    let currentStep = 0;
+    let scores = new Array(6).fill(null);
+
+    const results = [
+      { min: 15, max: 18, tag: 'AI-Forward',      text: "You're ahead of the curve. Let's build on it." },
+      { min: 10, max: 14, tag: 'Growth-Ready',     text: "Solid foundation. A few targeted automations could unlock significant growth." },
+      { min: 5,  max: 9,  tag: 'High Opportunity', text: "There's meaningful revenue being left on the table. We can help recover it." },
+      { min: 0,  max: 4,  tag: 'Time to Move',     text: "Your business has significant untapped potential. This is the right time to act." }
+    ];
+
+    function showStep(idx) {
+      steps.forEach(s => s.classList.remove('active'));
+      steps[idx].classList.add('active');
+      progressEl.textContent = idx + 1;
+      backBtn.style.visibility = idx === 0 ? 'hidden' : 'visible';
+
+      /* restore selected state */
+      steps[idx].querySelectorAll('.quiz-option').forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.dataset.score == scores[idx]) btn.classList.add('selected');
+      });
+
+      nextBtn.classList.toggle('visible', scores[idx] !== null);
+    }
+
+    steps.forEach((step, stepIdx) => {
+      step.querySelectorAll('.quiz-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          step.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          scores[stepIdx] = parseInt(btn.dataset.score);
+          nextBtn.classList.add('visible');
+        });
+      });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < 5) {
+        currentStep++;
+        showStep(currentStep);
+      } else {
+        showResult();
+      }
+    });
+
+    backBtn.addEventListener('click', () => {
+      if (currentStep > 0) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    });
+
+    function showResult() {
+      const total = scores.reduce((sum, s) => sum + (s || 0), 0);
+      const band  = results.find(r => total >= r.min && total <= r.max) || results[3];
+
+      document.getElementById('resultScore').textContent = total;
+      document.getElementById('resultTag').textContent   = band.tag;
+      document.getElementById('resultText').textContent  = band.text;
+
+      steps[currentStep].classList.remove('active');
+      quizNav.style.display = 'none';
+      document.getElementById('quizProgress').style.display = 'none';
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('quizRestartBtn').addEventListener('click', () => {
+      scores = new Array(6).fill(null);
+      currentStep = 0;
+      resultEl.classList.remove('show');
+      quizNav.style.display = '';
+      document.getElementById('quizProgress').style.display = '';
+      showStep(0);
+    });
+
+    /* init */
+    showStep(0);
+  </script>
+</body>
+</html>
