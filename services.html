@@ -18,6 +18,7 @@
       --dark-surface-deeper: oklch(3% 0.004 70);
       --light-surface:       oklch(10% 0.007 70);
       --accent:              oklch(82% 0.22 135);
+      --accent-2:            oklch(72% 0.2 295);
       --text-on-dark:        oklch(95% 0.005 80);
       --text-on-dark-muted:  oklch(52% 0.008 75);
       --text-on-light:       oklch(95% 0.005 80);
@@ -248,7 +249,7 @@
 
     .quiz-score-num {
       font-family: var(--font-display); font-weight: 800; font-size: 72px;
-      color: var(--accent); letter-spacing: -0.04em; line-height: 1;
+      color: var(--accent-2); letter-spacing: -0.04em; line-height: 1;
       margin-bottom: 16px; display: block;
     }
 
@@ -416,19 +417,27 @@
 
     /* ── RESPONSIVE ──────────────────────────────────────────── */
     @media (max-width: 767px) {
-      .container { padding-inline: 24px; }
+      .container { padding-inline: 20px; }
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
-      #hero { padding-top: 120px; }
+      #hero { padding-top: 110px; padding-bottom: 56px; }
+      .hero-headline { font-size: 36px; }
+      .hero-sub { font-size: 16px; }
+      #quiz, .services-section { padding: 64px 0; }
 
       .service-row-main {
-        grid-template-columns: auto 1fr auto;
-        gap: 14px;
+        grid-template-columns: 32px 1fr auto;
+        gap: 12px;
+        padding: 22px 0;
       }
+      .service-name { font-size: 18px; }
+      .service-oneliner { font-size: 14px; }
       .service-expand { padding-left: 0; padding-right: 0; }
-      .service-row.open .service-expand { padding-left: 0; padding-right: 0; }
+      .service-row.open .service-expand { padding-left: 0; padding-right: 0; padding-bottom: 22px; }
 
-      .quiz-card { padding: 28px 20px; }
+      .quiz-card { padding: 24px 18px; }
+      .quiz-question { font-size: 19px; }
+      .quiz-option { padding: 12px 14px; font-size: 14px; }
 
       .footer-main { flex-direction: column; align-items: center; text-align: center; }
       .footer-links { flex-wrap: wrap; justify-content: center; }
@@ -571,7 +580,6 @@
         </div>
         <div class="service-expand">
           <p class="expand-problem"><span class="expand-label">Problem</span>A new lead comes in. Your team is busy. They respond hours later. The lead already booked with a competitor.</p>
-          <p class="expand-fix"><span class="expand-label">Fix</span>Instant, AI-powered responses the moment someone reaches out — day or night, no manual effort required.</p>
         </div>
       </div>
 
@@ -586,7 +594,6 @@
         </div>
         <div class="service-expand">
           <p class="expand-problem"><span class="expand-label">Problem</span>Most leads don't convert on the first touch. Most businesses stop following up after two attempts.</p>
-          <p class="expand-fix"><span class="expand-label">Fix</span>Automated follow-up sequences that keep your business top of mind until the lead is ready to move.</p>
         </div>
       </div>
 
@@ -601,7 +608,6 @@
         </div>
         <div class="service-expand">
           <p class="expand-problem"><span class="expand-label">Problem</span>You have hundreds of past leads and old customers sitting in a spreadsheet doing nothing.</p>
-          <p class="expand-fix"><span class="expand-label">Fix</span>Automated campaigns that re-engage dormant contacts and turn old data into new revenue.</p>
         </div>
       </div>
 
@@ -616,7 +622,6 @@
         </div>
         <div class="service-expand">
           <p class="expand-problem"><span class="expand-label">Problem</span>Your team spends hours on data entry, form handling, and manual document workflows.</p>
-          <p class="expand-fix"><span class="expand-label">Fix</span>Automated document processing that captures, sorts, and routes information without human input.</p>
         </div>
       </div>
 
@@ -631,7 +636,6 @@
         </div>
         <div class="service-expand">
           <p class="expand-problem"><span class="expand-label">Problem</span>Your team wastes time chasing updates, checking in, and compiling reports manually.</p>
-          <p class="expand-fix"><span class="expand-label">Fix</span>Automated alerts and reports delivered to the right people at the right time — without anyone having to ask.</p>
         </div>
       </div>
     </div>
@@ -656,7 +660,7 @@
           <span class="service-toggle">+</span>
         </div>
         <div class="service-expand">
-          <p class="expand-fix">A slow, outdated website doesn't just look bad — it loses you customers. We build modern, fast, mobile-optimised websites designed to convert visitors into inquiries.</p>
+          <p class="expand-problem"><span class="expand-label">Why it matters</span>A slow, outdated website doesn't just look bad — it loses you customers before they even contact you.</p>
         </div>
       </div>
 
@@ -670,7 +674,7 @@
           <span class="service-toggle">+</span>
         </div>
         <div class="service-expand">
-          <p class="expand-fix">Ranking on Google isn't luck — it's a system. We build your organic search presence so the right customers find you without paid ads every month.</p>
+          <p class="expand-problem"><span class="expand-label">Why it matters</span>Ranking on Google isn't luck — it's a system that compounds month over month, lowering your cost per customer over time.</p>
         </div>
       </div>
 
@@ -684,7 +688,7 @@
           <span class="service-toggle">+</span>
         </div>
         <div class="service-expand">
-          <p class="expand-fix">For local businesses, your Google profile is your most visible real estate. We optimise it so you appear at the top when nearby customers search for what you offer.</p>
+          <p class="expand-problem"><span class="expand-label">Why it matters</span>For local businesses, your Google profile is your most visible real estate — often more important than your website.</p>
         </div>
       </div>
 
@@ -698,7 +702,7 @@
           <span class="service-toggle">+</span>
         </div>
         <div class="service-expand">
-          <p class="expand-fix">When you need results now, paid ads deliver. We run targeted Google and social campaigns built around your ideal customer — not guesswork.</p>
+          <p class="expand-problem"><span class="expand-label">Why it matters</span>When you need results now, paid ads deliver — but only if they're built around your ideal customer instead of guesswork.</p>
         </div>
       </div>
 
@@ -712,7 +716,7 @@
           <span class="service-toggle">+</span>
         </div>
         <div class="service-expand">
-          <p class="expand-fix">Clear, plain-language reporting on what's driving results and what's wasting budget. The insights you need to make better decisions — nothing more.</p>
+          <p class="expand-problem"><span class="expand-label">Why it matters</span>Most dashboards bury the few numbers that actually matter. We surface what drives revenue and what's wasting budget — nothing more.</p>
         </div>
       </div>
     </div>
@@ -737,7 +741,7 @@
           <span class="service-toggle">+</span>
         </div>
         <div class="service-expand">
-          <p class="expand-fix">A custom dashboard that shows you exactly what's happening in your business — leads, revenue, performance, pipeline — all in real time, in one place.</p>
+          <p class="expand-problem"><span class="expand-label">Why it matters</span>You can't scale what you can't see. A live dashboard turns scattered data into one clear picture you can act on.</p>
         </div>
       </div>
 
@@ -751,7 +755,7 @@
           <span class="service-toggle">+</span>
         </div>
         <div class="service-expand">
-          <p class="expand-fix">If your business needs a custom tool, internal system, or client-facing digital product, we build it. Scoped to your problem. Built to last.</p>
+          <p class="expand-problem"><span class="expand-label">Why it matters</span>Off-the-shelf tools force your business to fit them. Custom-built tools fit your business — and become a real competitive moat.</p>
         </div>
       </div>
     </div>

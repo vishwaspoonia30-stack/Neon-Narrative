@@ -18,6 +18,7 @@
       --dark-surface-deeper: oklch(3% 0.004 70);
       --light-surface:       oklch(10% 0.007 70);
       --accent:              oklch(82% 0.22 135);
+      --accent-2:            oklch(72% 0.2 295);
       --text-on-dark:        oklch(95% 0.005 80);
       --text-on-dark-muted:  oklch(52% 0.008 75);
       --text-on-light:       oklch(95% 0.005 80);
@@ -335,13 +336,17 @@
 
     /* ── RESPONSIVE ───────────────────────────────────────────────── */
     @media (max-width: 767px) {
-      .container { padding-inline: 24px; }
+      .container { padding-inline: 20px; }
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
-      #hero { padding-top: 120px; }
+      #hero { padding-top: 110px; padding-bottom: 48px; }
+      #form-section { padding: 64px 0; }
+      .hero-headline { font-size: 38px; }
+      .form-header { font-size: 26px; }
 
-      .form-layout { grid-template-columns: 1fr; gap: 56px; }
+      .form-layout { grid-template-columns: 1fr; gap: 48px; }
       .expect-panel { position: static; }
+      .field-input, .field-textarea, .field-select { font-size: 16px; }
 
       .trust-row { flex-direction: column; gap: 16px; text-align: center; }
       .trust-divider { display: none; }

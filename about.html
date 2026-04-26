@@ -18,6 +18,7 @@
       --dark-surface-deeper: oklch(3% 0.004 70);
       --light-surface:       oklch(10% 0.007 70);
       --accent:              oklch(82% 0.22 135);
+      --accent-2:            oklch(72% 0.2 295);
       --text-on-dark:        oklch(95% 0.005 80);
       --text-on-dark-muted:  oklch(52% 0.008 75);
       --text-on-light:       oklch(95% 0.005 80);
@@ -213,7 +214,7 @@
     .brand-quote-mark {
       font-family: var(--font-display); font-weight: 800;
       font-size: clamp(72px, 10vw, 120px); line-height: 0.8;
-      color: oklch(82% 0.22 135 / 0.20);
+      color: oklch(72% 0.2 295 / 0.32);
       display: block; margin-bottom: 12px;
       letter-spacing: -0.05em;
       user-select: none;
@@ -285,15 +286,25 @@
 
     /* ── RESPONSIVE ──────────────────────────────────────────────── */
     @media (max-width: 767px) {
-      .container { padding-inline: 24px; }
+      .container { padding-inline: 20px; }
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
-      #hero { padding-top: 120px; }
+      #hero { padding-top: 110px; padding-bottom: 56px; }
+      .hero-headline { font-size: 36px; }
+      .hero-sub { font-size: 16px; }
+      #mission, #apart, #clients, #brand, #cta-final { padding: 64px 0; }
 
-      .mission-grid { grid-template-columns: 1fr; gap: 40px; }
-      .clients-grid { grid-template-columns: 1fr; gap: 48px; }
+      .mission-grid { grid-template-columns: 1fr; gap: 32px; }
+      .clients-grid { grid-template-columns: 1fr; gap: 40px; }
       .clients-header .section-headline { font-size: 28px; }
-      .principle { grid-template-columns: 64px 1fr; gap: 0 20px; }
+      .principle {
+        grid-template-columns: 1fr;
+        gap: 8px 0;
+        padding: 24px 0;
+      }
+      .principle-title { font-size: 19px; }
+      .principle-body { font-size: 15px; }
+      .brand-quote { font-size: 22px; }
 
       .footer-main { flex-direction: column; align-items: center; text-align: center; }
       .footer-links { flex-wrap: wrap; justify-content: center; }
@@ -344,9 +355,8 @@
           <h2 class="section-headline reveal" style="font-size:clamp(28px,3.5vw,44px);color:var(--text-on-light);letter-spacing:-0.02em;">We Sell Outcomes.<br>Not Technology.</h2>
         </div>
         <div class="mission-body reveal">
-          <p>The businesses we work with don't need another software subscription or a jargon-heavy proposal. They need someone to look at where they're losing time and revenue, and build a system that fixes it.</p>
-          <p>That's the only question we ask before taking on any engagement: does this genuinely solve a problem for this business? If yes, we move forward. If not, we say so.</p>
-          <p>This approach means we work with fewer clients — and do better work for each one.</p>
+          <p>Most businesses don't need another software subscription. They need someone to look at where they're losing time and revenue, and build a system that fixes it.</p>
+          <p>If we can't genuinely solve a problem for you, we'll say so. That's why we work with fewer clients — and do better work for each one.</p>
         </div>
       </div>
     </div>

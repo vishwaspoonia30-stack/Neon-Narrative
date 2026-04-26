@@ -20,6 +20,7 @@
       --dark-surface-deeper: oklch(3% 0.004 70);
       --light-surface:       oklch(10% 0.007 70);
       --accent:              oklch(82% 0.22 135);
+      --accent-2:            oklch(72% 0.2 295);
       --text-on-dark:        oklch(95% 0.005 80);
       --text-on-dark-muted:  oklch(52% 0.008 75);
       --text-on-light:       oklch(95% 0.005 80);
@@ -309,24 +310,6 @@
     .btn-ghost:hover { color: var(--text-on-dark); }
     .btn-ghost:hover::after { transform: scaleX(1); }
 
-    /* hero logo (right side) */
-    .hero-decor {
-      position: absolute;
-      right: 40px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 300px;
-      max-width: 28vw;
-      pointer-events: none;
-      z-index: 1;
-    }
-    .hero-decor img {
-      display: block;
-      width: 100%;
-      height: auto;
-      filter: drop-shadow(0 0 32px oklch(82% 0.22 135 / 0.18));
-    }
-
     /* scroll indicator */
     .scroll-indicator {
       position: absolute;
@@ -436,7 +419,7 @@
       font-weight: 800;
       font-size: 64px;
       line-height: 1;
-      color: oklch(82% 0.22 135 / 0.20);
+      color: oklch(72% 0.2 295 / 0.35);
       margin-bottom: 8px;
       display: block;
       letter-spacing: -0.04em;
@@ -495,16 +478,20 @@
       flex: 1;
       padding: 12px 16px;
       background: oklch(12% 0.008 70);
-      border: 1px solid var(--divider-dark);
+      border: 1.5px solid var(--accent);
       border-radius: 4px;
       font-family: var(--font-body);
       font-size: 15px;
       color: var(--text-on-dark);
       outline: none;
-      transition: border-color 200ms ease;
+      box-shadow: 0 0 0 3px oklch(82% 0.22 135 / 0.08);
+      transition: box-shadow 200ms ease, background 200ms ease;
     }
-    .audit-input:focus { border-color: var(--accent); }
-    .audit-input::placeholder { color: oklch(35% 0.006 70); }
+    .audit-input:focus {
+      box-shadow: 0 0 0 4px oklch(82% 0.22 135 / 0.18);
+      background: oklch(14% 0.01 70);
+    }
+    .audit-input::placeholder { color: oklch(40% 0.04 135); }
 
     .audit-btn {
       font-family: var(--font-body);
@@ -633,7 +620,7 @@
     .fallback-title {
       font-family: var(--font-display);
       font-weight: 700;
-      font-size: 16px;
+      font-size: 18px;
       color: var(--accent);
       margin-bottom: 8px;
       letter-spacing: -0.01em;
@@ -642,8 +629,98 @@
       font-family: var(--font-body);
       font-size: 13px;
       color: var(--text-on-dark-muted);
-      margin-bottom: 18px;
+      margin-bottom: 22px;
       line-height: 1.6;
+    }
+    .fallback-option { margin-bottom: 0; }
+    .fallback-option-mail {
+      background: oklch(72% 0.2 295 / 0.08);
+      border: 1px solid oklch(72% 0.2 295 / 0.35);
+      border-radius: 6px;
+      padding: 18px;
+      margin-bottom: 4px;
+    }
+    .fallback-option-mail .audit-btn {
+      background: var(--accent-2);
+      color: var(--dark-surface);
+      width: auto;
+      display: inline-block;
+      text-decoration: none;
+    }
+    .fallback-option-mail .audit-btn:hover {
+      box-shadow: 0 8px 24px oklch(72% 0.2 295 / 0.4);
+    }
+    .option-label {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .fallback-option-mail .option-label { color: var(--accent-2); }
+    .option-desc {
+      font-family: var(--font-body);
+      font-size: 13.5px;
+      color: var(--text-on-dark-muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .option-desc strong { color: var(--text-on-dark); font-weight: 600; }
+
+    .fallback-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0;
+      color: var(--text-on-dark-muted);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .fallback-divider::before,
+    .fallback-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--divider-dark);
+    }
+
+    .instructions-block { margin-bottom: 16px; }
+    .instructions-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--divider-dark);
+    }
+    .instr-tab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 8px 12px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-on-dark-muted);
+      cursor: pointer;
+      margin-bottom: -1px;
+      transition: color 200ms ease, border-color 200ms ease;
+    }
+    .instr-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .instr-tab:hover { color: var(--text-on-dark); }
+    .instr-panel { display: none; }
+    .instr-panel.active { display: block; }
+    .fb-step-text em {
+      font-style: normal;
+      color: var(--text-on-dark);
+      opacity: 0.85;
     }
     .steps-grid {
       display: grid;
@@ -1001,72 +1078,31 @@
 
     .problem-body {
       font-family: var(--font-body);
-      font-size: 17px;
+      font-size: 18px;
       color: var(--text-on-dark-muted);
       line-height: 1.75;
       max-width: 65ch;
     }
     .problem-body p + p { margin-top: 20px; }
 
-    /* ──────────────────────────────────────────────────────────
-       7. SERVICES SNAPSHOT
-    ────────────────────────────────────────────────────────── */
-    #services {
-      background: var(--light-surface);
-      padding: var(--section-pad-v) 0;
-    }
-
-    .services-header { margin-bottom: 56px; }
-    .services-header .section-headline { color: var(--text-on-light); }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 48px;
-    }
-
-    .service-col-title {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 18px;
-      color: var(--text-on-light);
-      border-bottom: 1px solid var(--accent);
-      padding-bottom: 14px;
-      margin-bottom: 20px;
-      line-height: 1.3;
-    }
-
-    .service-list {
-      list-style: none;
-    }
-    .service-list li {
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 15px;
-      color: var(--text-on-light-muted);
-      padding: 10px 0;
-      border-bottom: 1px solid var(--divider-light);
-      cursor: default;
-      transition: color 150ms;
-    }
-    .service-list li:hover { color: var(--text-on-light); }
-
-    .services-cta {
-      margin-top: 56px;
-      text-align: center;
-    }
-    .services-cta a {
+    .problem-cta { margin-top: 28px; }
+    .btn-ghost-link {
       font-family: var(--font-body);
       font-weight: 600;
       font-size: 15px;
       color: var(--accent);
       text-decoration: none;
-      transition: opacity 150ms;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 2px;
+      transition: border-color 200ms ease, opacity 200ms ease;
     }
-    .services-cta a:hover { opacity: 0.75; }
+    .btn-ghost-link:hover {
+      border-bottom-color: var(--accent);
+      opacity: 0.85;
+    }
 
     /* ──────────────────────────────────────────────────────────
-       8. FINAL CTA
+       7. FINAL CTA
     ────────────────────────────────────────────────────────── */
     #cta-final {
       background: var(--dark-surface);
@@ -1232,40 +1268,44 @@
     }
     @media (max-width: 767px) {
       #intro-skip { top: 20px; right: 20px; }
+      /* Show the full intro video on phones — no cropping of logo/tagline */
+      #intro-overlay video { object-fit: contain; }
+    }
+    /* Tablet & narrow landscape: keep video fully visible */
+    @media (max-width: 900px) and (orientation: portrait) {
+      #intro-overlay video { object-fit: contain; }
     }
 
     /* ──────────────────────────────────────────────────────────
        RESPONSIVE
     ────────────────────────────────────────────────────────── */
-    @media (max-width: 1279px) {
-      .hero-decor { display: none; }
-    }
-
     @media (max-width: 767px) {
       :root {
         --section-pad-v: var(--section-pad-vm);
       }
 
-      .container { padding-inline: 24px; }
+      .container { padding-inline: 20px; }
 
       /* nav */
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
 
       /* hero */
-      .hero-inner { padding-inline: 24px; padding-top: 120px; }
+      .hero-inner { padding-inline: 20px; padding-top: 110px; padding-bottom: 56px; }
       .hero-content { max-width: 100%; }
-      .hero-headline { font-size: 44px; }
-      .hero-decor {
-        display: none;
+      .hero-headline {
+        font-size: clamp(28px, 8vw, 38px);
+        line-height: 1.18;
+        padding-bottom: 0.1em;
       }
+      .hero-sub { font-size: 16px; max-width: 100%; }
 
       /* pillars */
       .pillars-grid { grid-template-columns: 1fr; gap: 0; }
-      .pillar { padding: 32px 0; border-right: none !important; margin-right: 0 !important; }
+      .pillar { padding: 28px 0; border-right: none !important; margin-right: 0 !important; }
 
-      /* services */
-      .services-grid { grid-template-columns: 1fr; gap: 40px; }
+      /* problem */
+      .problem-headline br { display: none; }
 
       /* footer */
       .footer-main { flex-direction: column; align-items: center; text-align: center; }
@@ -1273,12 +1313,15 @@
       .footer-bottom { flex-direction: column; gap: 14px; }
 
       /* audit card */
-      .audit-card { padding: 24px 18px; }
+      .audit-card { padding: 20px 16px; }
       .audit-input-row { flex-direction: column; }
       .audit-btn { width: 100%; }
-      .overall-band { padding: 20px; gap: 18px; }
+      .audit-hint { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .overall-band { padding: 18px; gap: 16px; }
       .cta-row { flex-direction: column; align-items: stretch; }
       .reset-btn { width: 100%; }
+      .fallback-box { padding: 18px 14px; }
+      .paste-row { flex-direction: column; }
     }
   </style>
 </head>
@@ -1346,9 +1389,6 @@
         </div>
       </div>
 
-      <div class="hero-decor" aria-hidden="true">
-        <img src="primary-lockup.png" alt="" />
-      </div>
     </div>
 
     <div class="scroll-indicator" id="scrollIndicator">
@@ -1438,19 +1478,54 @@
           <div class="fetch-status" id="fetch-status"></div>
         </div>
 
-        <!-- Fallback: paste source -->
+        <!-- Fallback: email or paste source -->
         <div id="fallback-box" class="fallback-box">
           <div class="fallback-title">This site blocks automated requests</div>
-          <div class="fallback-desc">No worries — paste your page source below. The analysis is identical, just manual input instead of a live fetch.</div>
-          <div class="steps-grid">
-            <div class="fb-step"><span class="step-num">1</span><div class="fb-step-text">Open your site in a browser tab</div></div>
-            <div class="fb-step"><span class="step-num">2</span><div class="fb-step-text">Press <span class="kbd">Ctrl+U</span> (Win) or <span class="kbd">⌘⌥U</span> (Mac) — opens View Source</div></div>
-            <div class="fb-step"><span class="step-num">3</span><div class="fb-step-text">Press <span class="kbd">Ctrl+A</span> to select all, then <span class="kbd">Ctrl+C</span> to copy</div></div>
-            <div class="fb-step"><span class="step-num">4</span><div class="fb-step-text">Paste it in the box below and click Analyze</div></div>
+          <div class="fallback-desc">Two ways to still get your audit:</div>
+
+          <!-- Option A: easiest, mobile-friendly -->
+          <div class="fallback-option fallback-option-mail">
+            <span class="option-label">Option A — Easiest (works on phone)</span>
+            <p class="option-desc">Email your domain to <strong>info@neonnarrative.com</strong> — we'll send your full audit within 1 business day.</p>
+            <a id="audit-mail-btn" href="mailto:info@neonnarrative.com?subject=Brand%20Audit%20Request" class="audit-btn">Email Audit Request →</a>
           </div>
-          <div class="paste-row">
-            <textarea class="paste-area" id="html-paste" placeholder="Paste your full page HTML here (Ctrl+V)…"></textarea>
-            <button class="audit-btn" onclick="analyzeFromPaste()" style="flex-shrink:0;">Analyze →</button>
+
+          <div class="fallback-divider"><span>OR</span></div>
+
+          <!-- Option B: self-serve paste (desktop) -->
+          <div class="fallback-option">
+            <span class="option-label">Option B — Self-serve (best on desktop)</span>
+            <p class="option-desc">Paste your page source and we'll analyze it instantly.</p>
+
+            <div class="instructions-block">
+              <div class="instructions-tabs">
+                <button class="instr-tab active" data-tab="desktop" onclick="switchInstrTab('desktop')">💻 Desktop</button>
+                <button class="instr-tab" data-tab="mobile" onclick="switchInstrTab('mobile')">📱 Mobile</button>
+              </div>
+
+              <div class="instr-panel active" id="instr-desktop">
+                <div class="steps-grid">
+                  <div class="fb-step"><span class="step-num">1</span><div class="fb-step-text">Open your site in a browser tab</div></div>
+                  <div class="fb-step"><span class="step-num">2</span><div class="fb-step-text">Press <span class="kbd">Ctrl+U</span> (Win) or <span class="kbd">⌘⌥U</span> (Mac)</div></div>
+                  <div class="fb-step"><span class="step-num">3</span><div class="fb-step-text">Press <span class="kbd">Ctrl+A</span> then <span class="kbd">Ctrl+C</span> to copy</div></div>
+                  <div class="fb-step"><span class="step-num">4</span><div class="fb-step-text">Paste below and tap Analyze</div></div>
+                </div>
+              </div>
+
+              <div class="instr-panel" id="instr-mobile">
+                <div class="steps-grid">
+                  <div class="fb-step"><span class="step-num">1</span><div class="fb-step-text">In your browser address bar, type <span class="kbd">view-source:</span> before your URL <em>(e.g. <span class="kbd">view-source:apple.com</span>)</em></div></div>
+                  <div class="fb-step"><span class="step-num">2</span><div class="fb-step-text">Long-press the page → tap <strong>Select All</strong> → <strong>Copy</strong></div></div>
+                  <div class="fb-step"><span class="step-num">3</span><div class="fb-step-text">Come back here, tap the box below, paste, and tap Analyze</div></div>
+                  <div class="fb-step"><span class="step-num">↺</span><div class="fb-step-text">Stuck? Use <strong>Option A</strong> above — we'll do it for you.</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="paste-row">
+              <textarea class="paste-area" id="html-paste" placeholder="Paste your full page HTML here…"></textarea>
+              <button class="audit-btn" onclick="analyzeFromPaste()" style="flex-shrink:0;">Analyze →</button>
+            </div>
           </div>
         </div>
 
@@ -1493,56 +1568,13 @@
     <div class="container">
       <div class="problem-inner">
         <span class="tag reveal">The Real Problem</span>
-        <h2 class="problem-headline reveal">Your Competitors Are Already<br>Using AI. Are You?</h2>
+        <h2 class="problem-headline reveal">Your Competitors Are Already <br>Using AI. Are You?</h2>
         <div class="problem-body">
-          <p class="reveal">Before a customer calls, books, or buys — they look you up. If your website is slow, your Google profile is incomplete, or your follow-up is manual, you've already lost them.</p>
-          <p class="reveal">Most businesses we work with aren't failing. They're just operating on outdated systems. A slow website costs clients. An unanswered lead costs revenue. A missed follow-up costs growth.</p>
-          <p class="reveal">We fix the front door and the engine behind it.</p>
+          <p class="reveal">A slow website costs clients. An unanswered lead costs revenue. A missed follow-up costs growth. We fix the front door and the engine behind it.</p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─────────────────────────── SERVICES ──────────────────────── -->
-  <section id="services">
-    <div class="container">
-      <div class="services-header">
-        <span class="tag reveal">Our Services</span>
-        <h2 class="section-headline reveal" style="color: var(--text-on-light);">What We Do</h2>
-      </div>
-
-      <div class="services-grid">
-        <div class="reveal">
-          <h3 class="service-col-title">AI Automation</h3>
-          <ul class="service-list">
-            <li>Speed to Lead</li>
-            <li>Follow-up &amp; Nurture</li>
-            <li>Database Reactivation</li>
-            <li>Document Processing</li>
-            <li>Internal Reporting</li>
-          </ul>
+        <div class="problem-cta reveal">
+          <a href="services.html" class="btn-ghost-link">See the full breakdown →</a>
         </div>
-        <div class="reveal">
-          <h3 class="service-col-title">Digital Presence</h3>
-          <ul class="service-list">
-            <li>Website Redesign</li>
-            <li>SEO</li>
-            <li>Google Business Profile</li>
-            <li>Online Ads</li>
-            <li>Analytics Reports</li>
-          </ul>
-        </div>
-        <div class="reveal">
-          <h3 class="service-col-title">Growth &amp; Systems</h3>
-          <ul class="service-list">
-            <li>Professional Dashboards</li>
-            <li>Product Development</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="services-cta reveal">
-        <a href="services.html">Explore Our Services →</a>
       </div>
     </div>
   </section>
@@ -1749,6 +1781,28 @@
       ids.forEach(id => document.getElementById(id).style.display = 'block');
     }
 
+    function switchInstrTab(tab) {
+      document.querySelectorAll('.instr-tab').forEach(t =>
+        t.classList.toggle('active', t.dataset.tab === tab)
+      );
+      document.querySelectorAll('.instr-panel').forEach(p =>
+        p.classList.toggle('active', p.id === 'instr-' + tab)
+      );
+    }
+
+    function updateMailLink() {
+      const domain = (document.getElementById('domain-input').value || '').trim();
+      const link = document.getElementById('audit-mail-btn');
+      if (!link) return;
+      const subject = domain
+        ? `Brand Audit Request — ${domain}`
+        : 'Brand Audit Request';
+      const body = domain
+        ? `Hi Neon Narrative,\n\nPlease run a full brand audit for: ${domain}\n\nThanks!`
+        : 'Hi Neon Narrative,\n\nPlease run a full brand audit for my site.\n\nThanks!';
+      link.href = 'mailto:info@neonnarrative.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    }
+
     function resetAudit() {
       showOnly('audit-empty');
       document.getElementById('html-paste').value = '';
@@ -1794,6 +1848,7 @@
 
       if (!result) {
         document.getElementById('analyze-btn').disabled = false;
+        updateMailLink();
         showOnly('fallback-box');
         return;
       }
@@ -2073,6 +2128,15 @@
       d.style.display = open ? 'none' : 'block';
       btn.textContent = open ? `+ ${d.querySelectorAll('.finding').length} more` : '− hide';
     }
+
+    /* Default to mobile tab on touch devices, keep mail link in sync with domain */
+    (function () {
+      const isTouch = window.matchMedia('(max-width: 767px), (pointer: coarse)').matches;
+      if (isTouch) switchInstrTab('mobile');
+      const di = document.getElementById('domain-input');
+      if (di) di.addEventListener('input', updateMailLink);
+      updateMailLink();
+    })();
   </script>
 </body>
 </html>
