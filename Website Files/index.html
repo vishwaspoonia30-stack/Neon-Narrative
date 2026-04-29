@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neon Narrative — AI Operations & Digital Marketing</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="alternate icon" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+    /* ── Color System ─────────────────────────────────────────── */
+    :root {
+      --dark-surface:        oklch(6% 0.006 70);
+      --dark-surface-raised: oklch(10% 0.007 70);
+      --dark-surface-deeper: oklch(3% 0.004 70);
+      --light-surface:       oklch(10% 0.007 70);
+      --accent:              oklch(82% 0.22 135);
+      --accent-2:            oklch(72% 0.2 295);
+      --text-on-dark:        oklch(95% 0.005 80);
+      --text-on-dark-muted:  oklch(52% 0.008 75);
+      --text-on-light:       oklch(95% 0.005 80);
+      --text-on-light-muted: oklch(52% 0.008 75);
+      --divider-dark:        oklch(16% 0.009 70);
+      --divider-light:       oklch(16% 0.009 70);
+
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'Inter', sans-serif;
+
+      --section-pad-v:  120px;
+      --section-pad-vm: 72px;
+      --max-w:          1200px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-on-dark);
+      background: var(--dark-surface);
+      overflow-x: hidden;
+    }
+
+    /* ── Utility ──────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: 40px;
+    }
+
+    .tag {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .section-headline {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(32px, 4vw, 48px);
+      letter-spacing: -0.02em;
+      line-height: 1.28;
+      padding-bottom: 0.14em;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 15px;
+      background: var(--accent);
+      color: var(--dark-surface);
+      padding: 12px 28px;
+      border-radius: 4px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 8px 24px oklch(82% 0.22 135 / 0.35),
+        0 0 0 1px oklch(95% 0.005 80 / 0.55),
+        0 0 32px oklch(95% 0.005 80 / 0.18);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ── Neon character pass — purple/white accents ──────────── */
+    .tag::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow:
+        0 0 8px oklch(82% 0.22 135 / 0.75),
+        0 0 16px oklch(82% 0.22 135 / 0.35);
+      margin-right: 10px;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+    }
+    .hero-content::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 24px; right: 24px;
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent 0%,
+        oklch(72% 0.2 295 / 0.75) 22%,
+        oklch(95% 0.005 80 / 0.9) 50%,
+        oklch(82% 0.22 135 / 0.75) 78%,
+        transparent 100%);
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    /* ── Scroll Reveal ────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       1. NAV
+    ────────────────────────────────────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 20px 0;
+      transition: background 300ms ease-out, border-color 300ms ease-out, backdrop-filter 300ms ease-out,
+                  opacity 300ms ease, visibility 300ms ease;
+      border-bottom: 1px solid transparent;
+    }
+    #nav.scrolled {
+      background: var(--dark-surface-deeper);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: var(--divider-dark);
+      padding: 14px 0;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-wordmark {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--text-on-dark);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text-on-dark-muted);
+      text-decoration: none;
+      transition: color 150ms;
+    }
+    .nav-links a:hover { color: var(--text-on-dark); }
+
+    /* hamburger */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 1100;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--text-on-dark);
+      border-radius: 2px;
+      transition: transform 300ms ease, opacity 300ms ease;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* overlay */
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--dark-surface);
+      z-index: 1050;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+    }
+    .nav-overlay.open { display: flex; }
+    .nav-overlay a {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 32px;
+      color: var(--text-on-dark);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-overlay a:hover { color: var(--accent); }
+
+    /* ──────────────────────────────────────────────────────────
+       2. HERO
+    ────────────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      background: var(--dark-surface);
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Hero background video — atmospheric, not competing with the headline */
+    .hero-bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    /* Layered scrim — left/bottom darker for legibility, right/upper lets the video breathe */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        linear-gradient(to right,
+          oklch(6% 0.006 70 / 0.85) 0%,
+          oklch(6% 0.006 70 / 0.55) 45%,
+          oklch(6% 0.006 70 / 0.25) 100%),
+        linear-gradient(to bottom,
+          oklch(6% 0.006 70 / 0.0) 55%,
+          oklch(6% 0.006 70 / 0.8) 100%);
+      pointer-events: none;
+    }
+    /* Hairline accent at the hero base — connects hero to the next section without a hard seam */
+    #hero::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 1px;
+      z-index: 4;
+      background: linear-gradient(to right,
+        transparent 0%,
+        oklch(82% 0.22 135 / 0.45) 50%,
+        transparent 100%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: 40px;
+      padding-top: 100px;
+      padding-bottom: 80px;
+    }
+
+    .hero-content {
+      max-width: 720px;
+      position: relative;
+      z-index: 3;
+      padding: 36px 40px 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      background: linear-gradient(180deg,
+        oklch(6% 0.006 70 / 0.55) 0%,
+        oklch(6% 0.006 70 / 0.78) 100%);
+      border: 1px solid oklch(82% 0.22 135 / 0.18);
+      box-shadow:
+        0 30px 80px -30px oklch(0% 0 0 / 0.7),
+        0 0 0 1px oklch(82% 0.22 135 / 0.04) inset;
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(40px, 3.8vw, 52px);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text-on-dark);
+      margin-bottom: 20px;
+      padding-bottom: 0.12em;
+    }
+
+    .hero-sub {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 1.6;
+      color: var(--text-on-dark-muted);
+      max-width: 480px;
+      margin-bottom: 36px;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn-ghost {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-on-dark-muted);
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 150ms;
+      position: relative;
+    }
+    .btn-ghost::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 1px;
+      background: var(--text-on-dark-muted);
+      transform: scaleX(0);
+      transition: transform 150ms;
+    }
+    .btn-ghost:hover { color: var(--text-on-dark); }
+    .btn-ghost:hover::after { transform: scaleX(1); }
+
+    /* scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 1;
+      transition: opacity 300ms;
+    }
+    .scroll-indicator.hidden { opacity: 0; pointer-events: none; }
+    .scroll-indicator span {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-on-dark-muted);
+    }
+    .scroll-arrow {
+      width: 20px;
+      height: 20px;
+      border-right: 2px solid var(--text-on-dark-muted);
+      border-bottom: 2px solid var(--text-on-dark-muted);
+      transform: rotate(45deg);
+      animation: bounce 1.4s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(5px); }
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       3. TRUST BAR
+    ────────────────────────────────────────────────────────── */
+    #trust {
+      background: var(--dark-surface-raised);
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    .trust-label {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-on-dark-muted);
+      margin-bottom: 20px;
+    }
+
+    .trust-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .trust-tag {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--text-on-dark-muted);
+      border: 1px solid var(--divider-dark);
+      border-radius: 100px;
+      padding: 6px 18px;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       4. WHAT WE DO — 3 PILLARS
+    ────────────────────────────────────────────────────────── */
+    #pillars {
+      background: var(--light-surface);
+      padding: var(--section-pad-v) 0;
+    }
+
+    .pillars-header {
+      margin-bottom: 64px;
+    }
+    .pillars-header .section-headline {
+      color: var(--text-on-light);
+      max-width: 640px;
+    }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+
+    .pillar {
+      padding: 40px 40px 40px 0;
+      border-bottom: 1px solid var(--divider-light);
+      position: relative;
+    }
+    .pillar:not(:last-child) {
+      padding-right: 48px;
+      margin-right: 48px;
+      border-right: 1px solid var(--divider-light);
+    }
+
+    .pillar-number {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 64px;
+      line-height: 1;
+      color: oklch(72% 0.2 295 / 0.35);
+      margin-bottom: 8px;
+      display: block;
+      letter-spacing: -0.04em;
+      filter: drop-shadow(0 0 18px oklch(72% 0.2 295 / 0.4));
+    }
+
+    .pillar-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--text-on-light);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      padding-bottom: 0.1em;
+    }
+
+    .pillar-body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      color: var(--text-on-light-muted);
+      line-height: 1.65;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       Ambient accent glows on long dark stretches (desktop + mobile)
+    ────────────────────────────────────────────────────────── */
+    #audit, #problem, #cta-final {
+      position: relative;
+      overflow: hidden;
+    }
+    #audit::after, #problem::after, #cta-final::before {
+      content: '';
+      position: absolute;
+      width: 720px;
+      height: 720px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.20;
+      pointer-events: none;
+      z-index: 0;
+    }
+    #audit::after {
+      background: oklch(82% 0.22 135);
+      top: -260px;
+      right: -260px;
+    }
+    #problem::after {
+      background: oklch(72% 0.2 295);
+      bottom: -300px;
+      left: -300px;
+    }
+    #cta-final::before {
+      background: oklch(82% 0.22 135);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 820px;
+      height: 820px;
+      opacity: 0.14;
+    }
+    #audit > .container,
+    #problem > .container,
+    #cta-final > .container { position: relative; z-index: 1; }
+
+    /* Accent hairline divider above problem section */
+    #problem::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent 0%,
+        oklch(72% 0.2 295 / 0.45) 50%,
+        transparent 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Subtle dot-grid texture in the problem stretch */
+    #problem {
+      background-image:
+        radial-gradient(oklch(95% 0.005 80 / 0.025) 1px, transparent 1px);
+      background-size: 22px 22px;
+      background-position: 0 0;
+    }
+
+    /* Accent gradient borders on dark→dark section transitions */
+    #audit, #cta-final {
+      border-top: 1px solid transparent;
+      border-image: linear-gradient(to right,
+        transparent 0%,
+        oklch(82% 0.22 135 / 0.35) 50%,
+        transparent 100%) 1;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       5. BRAND AUDIT TOOL
+    ────────────────────────────────────────────────────────── */
+    #audit {
+      background: var(--dark-surface);
+      padding: var(--section-pad-v) 0;
+    }
+
+    .audit-header { margin-bottom: 48px; }
+    .audit-header .section-headline { color: var(--text-on-dark); }
+    .audit-sub {
+      font-size: 18px;
+      color: var(--text-on-dark-muted);
+      margin-top: 12px;
+    }
+
+    .audit-card {
+      background: var(--dark-surface-deeper);
+      border: 1px solid var(--divider-dark);
+      border-radius: 12px;
+      padding: 32px;
+      max-width: 780px;
+      margin-inline: auto;
+    }
+
+    .audit-input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .audit-input {
+      flex: 1;
+      padding: 12px 16px;
+      background: oklch(12% 0.008 70);
+      border: 1.5px solid var(--accent);
+      border-radius: 4px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--text-on-dark);
+      outline: none;
+      box-shadow: 0 0 0 3px oklch(82% 0.22 135 / 0.08);
+      transition: box-shadow 200ms ease, background 200ms ease;
+    }
+    .audit-input:focus {
+      box-shadow: 0 0 0 4px oklch(82% 0.22 135 / 0.18);
+      background: oklch(14% 0.01 70);
+    }
+    .audit-input::placeholder { color: oklch(40% 0.04 135); }
+
+    .audit-btn {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 14px;
+      background: var(--accent);
+      color: var(--dark-surface);
+      padding: 12px 22px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+    .audit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px oklch(82% 0.22 135 / 0.35);
+    }
+    .audit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .audit-hint {
+      font-size: 12px;
+      color: var(--text-on-dark-muted);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .live-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent);
+      background: oklch(82% 0.22 135 / 0.12);
+      padding: 4px 12px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .audit-empty {
+      text-align: center;
+      padding: 32px 20px;
+      color: var(--text-on-dark-muted);
+    }
+    .audit-empty p {
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .audit-empty strong {
+      color: var(--text-on-dark);
+      font-weight: 600;
+    }
+
+    .audit-loading { display: none; padding: 8px 0; }
+    .load-steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .load-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-on-dark-muted);
+      border: 1px solid var(--divider-dark);
+      background: oklch(12% 0.008 70);
+      opacity: 0.4;
+      transition: all 250ms ease;
+    }
+    .load-step.active {
+      opacity: 1;
+      border-color: var(--accent);
+      color: var(--text-on-dark);
+    }
+    .load-step.done {
+      opacity: 0.85;
+      color: var(--accent);
+    }
+    .step-spin {
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--divider-dark);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .step-icon { font-size: 14px; flex-shrink: 0; }
+    .fetch-status {
+      text-align: center;
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-on-dark-muted);
+      margin-top: 16px;
+      font-style: italic;
+    }
+
+    .fallback-box {
+      display: none;
+      background: oklch(12% 0.008 70);
+      border: 1px solid oklch(82% 0.22 135 / 0.3);
+      border-radius: 8px;
+      padding: 24px;
+    }
+    .fallback-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--accent);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .fallback-desc {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-on-dark-muted);
+      margin-bottom: 22px;
+      line-height: 1.6;
+    }
+    .fallback-option { margin-bottom: 0; }
+    .fallback-option-mail {
+      background: oklch(72% 0.2 295 / 0.08);
+      border: 1px solid oklch(72% 0.2 295 / 0.35);
+      border-radius: 6px;
+      padding: 18px;
+      margin-bottom: 4px;
+    }
+    .fallback-option-mail .audit-btn {
+      background: var(--accent-2);
+      color: var(--dark-surface);
+      width: auto;
+      display: inline-block;
+      text-decoration: none;
+    }
+    .fallback-option-mail .audit-btn:hover {
+      box-shadow: 0 8px 24px oklch(72% 0.2 295 / 0.4);
+    }
+    .option-label {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .fallback-option-mail .option-label { color: var(--accent-2); }
+    .option-desc {
+      font-family: var(--font-body);
+      font-size: 13.5px;
+      color: var(--text-on-dark-muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .option-desc strong { color: var(--text-on-dark); font-weight: 600; }
+
+    .fallback-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0;
+      color: var(--text-on-dark-muted);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .fallback-divider::before,
+    .fallback-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--divider-dark);
+    }
+
+    .instructions-block { margin-bottom: 16px; }
+    .instructions-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--divider-dark);
+    }
+    .instr-tab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 8px 12px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-on-dark-muted);
+      cursor: pointer;
+      margin-bottom: -1px;
+      transition: color 200ms ease, border-color 200ms ease;
+    }
+    .instr-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .instr-tab:hover { color: var(--text-on-dark); }
+    .instr-panel { display: none; }
+    .instr-panel.active { display: block; }
+    .fb-step-text em {
+      font-style: normal;
+      color: var(--text-on-dark);
+      opacity: 0.85;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .fb-step {
+      background: var(--dark-surface);
+      border: 1px solid var(--divider-dark);
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .step-num {
+      background: var(--accent);
+      color: var(--dark-surface);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .fb-step-text {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-on-dark-muted);
+      line-height: 1.5;
+    }
+    .kbd {
+      background: var(--dark-surface-deeper);
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--divider-dark);
+    }
+    .paste-area {
+      width: 100%;
+      min-height: 90px;
+      padding: 12px 14px;
+      background: var(--dark-surface);
+      border: 1px solid var(--divider-dark);
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--text-on-dark);
+      outline: none;
+      resize: vertical;
+      transition: border-color 200ms ease;
+    }
+    .paste-area:focus { border-color: var(--accent); }
+    .paste-area.error {
+      border-color: oklch(65% 0.18 25);
+      animation: shake 0.3s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+    .paste-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .paste-row textarea { flex: 1; }
+
+    .audit-results { display: none; }
+    .overall-band {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      background: oklch(12% 0.008 70);
+      border: 1px solid var(--divider-dark);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .score-ring {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .score-ring::before {
+      content: '';
+      position: absolute;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: var(--dark-surface-deeper);
+    }
+    .score-inner {
+      position: relative;
+      z-index: 1;
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-on-dark);
+      letter-spacing: -0.02em;
+    }
+    .overall-info .grade {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+    }
+    .overall-info .grade-label {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--text-on-dark-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+    .overall-info .domain-shown {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-on-dark);
+      margin-top: 6px;
+    }
+    .source-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .pill-live { color: var(--accent); background: oklch(82% 0.22 135 / 0.15); }
+    .pill-manual { color: var(--text-on-dark); background: var(--divider-dark); }
+    .overall-summary { flex: 1; }
+    .summary-text {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-on-dark-muted);
+      line-height: 1.65;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .metric-card {
+      background: oklch(12% 0.008 70);
+      border: 1px solid var(--divider-dark);
+      border-radius: 8px;
+      padding: 18px;
+    }
+    .metric-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .metric-name {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-on-dark);
+    }
+    .metric-badge {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+    .bar-track {
+      height: 6px;
+      background: var(--divider-dark);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0;
+      background: var(--accent);
+    }
+    .finding {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-on-dark-muted);
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+    .finding .ico {
+      font-size: 11px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .toggle-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      padding: 6px 0 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .toggle-btn:hover { opacity: 0.75; }
+    .extra-findings { display: none; }
+
+    .recs {
+      background: oklch(12% 0.008 70);
+      border: 1px solid oklch(82% 0.22 135 / 0.3);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .recs-title {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 14px;
+    }
+    .rec {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      align-items: flex-start;
+      font-family: var(--font-body);
+      font-size: 13px;
+    }
+    .rec:last-child { margin-bottom: 0; }
+    .rec-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--dark-surface);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .rec-body {
+      color: var(--text-on-dark-muted);
+      line-height: 1.55;
+    }
+    .rec-body strong {
+      color: var(--text-on-dark);
+      font-weight: 600;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .audit-cta {
+      flex: 1;
+      text-align: center;
+      text-decoration: none;
+      padding: 14px 22px;
+    }
+    .reset-btn {
+      background: none;
+      border: 1px solid var(--divider-dark);
+      border-radius: 4px;
+      padding: 13px 20px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-on-dark-muted);
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+    .reset-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .disclaimer {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--text-on-dark-muted);
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.5;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 560px) {
+      .metrics-grid { grid-template-columns: 1fr; }
+      .load-steps { grid-template-columns: 1fr; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .overall-band { flex-wrap: wrap; }
+      .paste-row { flex-direction: column; }
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       6. PROBLEM SECTION
+    ────────────────────────────────────────────────────────── */
+    #problem {
+      background: var(--dark-surface);
+      padding: var(--section-pad-v) 0;
+    }
+
+    .problem-inner {
+      max-width: 800px;
+    }
+
+    .problem-headline {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(36px, 4.5vw, 56px);
+      letter-spacing: -0.02em;
+      line-height: 1.28;
+      color: var(--text-on-dark);
+      margin-bottom: 32px;
+      padding-bottom: 0.14em;
+    }
+
+    .problem-body {
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: var(--text-on-dark-muted);
+      line-height: 1.75;
+      max-width: 65ch;
+    }
+    .problem-body p + p { margin-top: 20px; }
+
+    .problem-cta { margin-top: 28px; }
+    .btn-ghost-link {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 2px;
+      transition: border-color 200ms ease, opacity 200ms ease;
+    }
+    .btn-ghost-link:hover {
+      border-bottom-color: var(--accent);
+      opacity: 0.85;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       7. FINAL CTA
+    ────────────────────────────────────────────────────────── */
+    #cta-final {
+      background: var(--dark-surface);
+      padding: var(--section-pad-v) 0;
+      text-align: center;
+    }
+
+    .cta-final-inner {
+      max-width: 640px;
+      margin-inline: auto;
+    }
+
+    .cta-final-inner .section-headline {
+      color: var(--text-on-dark);
+    }
+
+    .cta-final-sub {
+      font-size: 18px;
+      color: var(--text-on-dark-muted);
+      margin-top: 16px;
+      line-height: 1.65;
+    }
+
+    .cta-final-inner .btn-primary {
+      margin-top: 32px;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       9. FOOTER
+    ────────────────────────────────────────────────────────── */
+    #footer {
+      background: var(--dark-surface-deeper);
+      padding: 40px 0 32px;
+    }
+
+    .footer-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-wordmark {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--text-on-dark);
+      text-decoration: none;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .footer-links a {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text-on-dark-muted);
+      text-decoration: none;
+      transition: color 150ms;
+    }
+    .footer-links a:hover { color: var(--text-on-dark); }
+
+    .footer-bottom {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--divider-dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-copy {
+      text-align: center;
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-on-dark-muted);
+      margin: 0;
+    }
+    .footer-socials {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--divider-dark);
+      border-radius: 50%;
+      color: var(--text-on-dark-muted);
+      text-decoration: none;
+      transition: color 200ms ease, border-color 200ms ease, transform 200ms ease, background 200ms ease;
+    }
+    .social-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: oklch(82% 0.22 135 / 0.08);
+      transform: translateY(-2px);
+    }
+    .social-link svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       10. INTRO OVERLAY
+    ────────────────────────────────────────────────────────── */
+    #intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #000;
+      transition: opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #intro-overlay.dismissing {
+      opacity: 0;
+      transform: scale(1.05);
+    }
+    #intro-overlay video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    #intro-skip {
+      position: absolute;
+      top: 32px;
+      right: 40px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-on-dark-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 12px;
+      opacity: 0;
+      transition: opacity 300ms ease, color 150ms ease;
+      letter-spacing: 0.02em;
+    }
+    #intro-skip.visible { opacity: 1; }
+    #intro-skip:hover { color: var(--accent); }
+    #intro-skip:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+    #nav.intro-hidden {
+      visibility: hidden;
+      opacity: 0;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #intro-overlay { display: none !important; }
+    }
+    /* Phones: skip the intro welcome video entirely */
+    @media (max-width: 767px) {
+      #intro-overlay { display: none !important; }
+    }
+    /* Tablet & narrow landscape: full-bleed cinematic on the intro */
+    @media (min-width: 768px) and (max-width: 900px) and (orientation: portrait) {
+      #intro-overlay video { object-fit: cover; }
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       RESPONSIVE
+    ────────────────────────────────────────────────────────── */
+    @media (max-width: 767px) {
+      :root {
+        --section-pad-v: 56px;
+      }
+
+      .container { padding-inline: 20px; }
+
+      /* nav */
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+
+      /* hero — mobile: no video, plate centered, ambient glow accent above */
+      #hero {
+        min-height: auto;
+        align-items: center;
+        padding-top: 96px;
+        padding-bottom: 56px;
+      }
+      /* Kill the welcome video on mobile — distracting on small screens */
+      .hero-bg-video { display: none; }
+      /* Replace the scrim with a green ambient glow that fills the empty space above the plate */
+      #hero::before {
+        background:
+          radial-gradient(circle 380px at 78% 18%,
+            oklch(82% 0.22 135 / 0.22) 0%,
+            oklch(82% 0.22 135 / 0.0) 70%),
+          radial-gradient(circle 320px at 18% 82%,
+            oklch(72% 0.2 295 / 0.16) 0%,
+            oklch(72% 0.2 295 / 0.0) 70%);
+      }
+      /* Hide the bottom-of-hero accent hairline (it was for the video edge) */
+      #hero::after { display: none; }
+      /* Mobile plate — tighter padding, centered, no scrim needed */
+      .hero-content {
+        max-width: 100%;
+        padding: 26px 22px 28px;
+        border-radius: 18px;
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+        background: linear-gradient(180deg,
+          oklch(8% 0.006 70 / 0.78) 0%,
+          oklch(6% 0.006 70 / 0.88) 100%);
+        box-shadow: 0 20px 60px -20px oklch(0% 0 0 / 0.6);
+      }
+      .hero-inner { padding-inline: 20px; padding-top: 0; padding-bottom: 0; }
+      .hero-headline {
+        font-size: clamp(28px, 8vw, 38px);
+        line-height: 1.18;
+        padding-bottom: 0.1em;
+      }
+      .hero-sub { font-size: 16px; max-width: 100%; }
+      /* Hide the scroll indicator on mobile — there's no longer empty bottom space to point to */
+      .scroll-indicator { display: none; }
+
+      /* trust — tighter, marquee-style horizontal scroll on overflow */
+      #trust { padding: 28px 0; position: relative; overflow: hidden; }
+      #trust::before, #trust::after {
+        content: '';
+        position: absolute;
+        top: 0; bottom: 0; width: 32px;
+        z-index: 2;
+        pointer-events: none;
+      }
+      #trust::before { left: 0; background: linear-gradient(to right, var(--dark-surface-raised), transparent); }
+      #trust::after  { right: 0; background: linear-gradient(to left,  var(--dark-surface-raised), transparent); }
+      .trust-tags {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        gap: 10px;
+        padding-inline: 20px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scroll-snap-type: x proximity;
+      }
+      .trust-tags::-webkit-scrollbar { display: none; }
+      .trust-tag { flex-shrink: 0; scroll-snap-align: start; }
+
+      /* pillars — card treatment with accent number, kills the all-text monotony */
+      .pillars-grid { grid-template-columns: 1fr; gap: 14px; }
+      .pillar {
+        padding: 24px 22px;
+        margin-right: 0 !important;
+        border-right: none !important;
+        border-bottom: none;
+        background: linear-gradient(155deg,
+          oklch(13% 0.008 70) 0%,
+          oklch(9% 0.006 70) 100%);
+        border: 1px solid var(--divider-light);
+        border-radius: 14px;
+        position: relative;
+        overflow: hidden;
+      }
+      .pillar::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 100% 0%,
+          oklch(72% 0.2 295 / 0.18) 0%,
+          transparent 55%);
+        pointer-events: none;
+      }
+      .pillar-number {
+        font-size: 44px;
+        margin-bottom: 4px;
+        background: linear-gradient(135deg, var(--accent) 0%, oklch(72% 0.2 295) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        opacity: 0.85;
+      }
+      .pillar-title { font-size: 20px; }
+      .pillar-body { font-size: 15px; line-height: 1.6; }
+
+      /* problem */
+      .problem-headline br { display: none; }
+
+      /* Tighter glows on mobile — narrower viewport */
+      #audit::after, #problem::after { width: 460px; height: 460px; filter: blur(80px); }
+      #audit::after { top: -180px; right: -180px; }
+      #problem::after { bottom: -200px; left: -200px; }
+      #cta-final::before { width: 520px; height: 520px; filter: blur(80px); }
+
+      /* CTA final — climax, not dead end */
+      #cta-final {
+        padding-top: 72px;
+        padding-bottom: 72px;
+      }
+      .cta-final-inner .section-headline {
+        font-size: clamp(28px, 8vw, 36px);
+        line-height: 1.2;
+      }
+
+      /* footer */
+      .footer-main { flex-direction: column; align-items: center; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+      .footer-bottom { flex-direction: column; gap: 14px; }
+
+      /* audit card */
+      .audit-card { padding: 20px 16px; }
+      .audit-input-row { flex-direction: column; }
+      .audit-btn { width: 100%; }
+      .audit-hint { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .overall-band { padding: 18px; gap: 16px; }
+      .cta-row { flex-direction: column; align-items: stretch; }
+      .reset-btn { width: 100%; }
+      .fallback-box { padding: 18px 14px; }
+      .paste-row { flex-direction: column; }
+    }
+
+    /* Auto-scrolling trust marquee on mobile — kills any "static dead row" feel */
+    @keyframes trustMarquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @media (max-width: 767px) {
+      .trust-tags.is-marquee {
+        flex-wrap: nowrap;
+        overflow: hidden;
+        justify-content: flex-start;
+        animation: trustMarquee 28s linear infinite;
+        width: max-content;
+        padding-inline: 0;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .trust-tags.is-marquee { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─────────────────────────── INTRO OVERLAY ──────────────── -->
+  <div id="intro-overlay" role="dialog" aria-label="Intro video" aria-modal="true">
+    <video
+      id="intro-video"
+      src="intro.mp4"
+      autoplay
+      muted
+      playsinline
+      preload="auto"
+    ></video>
+    <button id="intro-skip" aria-label="Skip intro">Skip Intro →</button>
+  </div>
+
+  <!-- ─────────────────────────── NAV ─────────────────────────── -->
+  <header id="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-wordmark">Neon Narrative</a>
+
+      <ul class="nav-links">
+        <li><a href="services.html">Services</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" class="btn-primary" style="padding:8px 20px;">Book a Session</a></li>
+      </ul>
+
+      <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- mobile overlay nav -->
+  <nav class="nav-overlay" id="nav-overlay">
+    <a href="services.html"     class="overlay-link">Services</a>
+    <a href="how-it-works.html" class="overlay-link">How It Works</a>
+    <a href="about.html"        class="overlay-link">About</a>
+    <a href="contact.html" class="btn-primary overlay-link">Book a Session</a>
+  </nav>
+
+  <!-- ─────────────────────────── HERO ─────────────────────────── -->
+  <section id="hero">
+    <video
+      class="hero-bg-video"
+      id="hero-bg-video"
+      src="intro.mp4"
+      autoplay
+      muted
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+    ></video>
+    <div class="hero-inner">
+      <div class="hero-content">
+        <span class="tag reveal">AI Operations &amp; Digital Growth</span>
+        <h1 class="hero-headline reveal">Where Strategy<br>Meets Automation.</h1>
+        <p class="hero-sub reveal">Growth isn't a marketing problem. It's a systems problem. We fix both.</p>
+        <div class="hero-cta-row reveal">
+          <a href="services.html" class="btn-primary">See What's Possible</a>
+          <a href="how-it-works.html" class="btn-ghost">How It Works</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="scroll-indicator" id="scrollIndicator">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── TRUST BAR ─────────────────────── -->
+  <section id="trust">
+    <div class="container">
+      <p class="trust-label reveal">Trusted by businesses across industries</p>
+      <div class="trust-tags">
+        <span class="trust-tag reveal">Healthcare</span>
+        <span class="trust-tag reveal">Real Estate</span>
+        <span class="trust-tag reveal">Legal</span>
+        <span class="trust-tag reveal">Fitness</span>
+        <span class="trust-tag reveal">Hospitality</span>
+        <span class="trust-tag reveal">Contracting</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── PILLARS ──────────────────────── -->
+  <section id="pillars">
+    <div class="container">
+      <div class="pillars-header">
+        <span class="tag reveal">What We Do</span>
+        <h2 class="section-headline reveal">Strategy. Automation.<br>Presence. All Connected.</h2>
+      </div>
+
+      <div class="pillars-grid">
+        <div class="pillar reveal">
+          <span class="pillar-number">01</span>
+          <h3 class="pillar-title">AI Automation</h3>
+          <p class="pillar-body">The work that never sleeps, handled by systems that don't.</p>
+        </div>
+        <div class="pillar reveal">
+          <span class="pillar-number">02</span>
+          <h3 class="pillar-title">Digital Presence</h3>
+          <p class="pillar-body">If they can't find you, they'll find someone else.</p>
+        </div>
+        <div class="pillar reveal">
+          <span class="pillar-number">03</span>
+          <h3 class="pillar-title">Growth &amp; Systems</h3>
+          <p class="pillar-body">You can't scale what you can't see. We build the visibility first.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── BRAND AUDIT TOOL ───────────────── -->
+  <section id="audit">
+    <div class="container">
+      <div class="audit-header">
+        <span class="tag reveal">Free Tool</span>
+        <h2 class="section-headline reveal">See How Your Brand<br>Stacks Up Online.</h2>
+        <p class="audit-sub reveal">Live analysis across 5 brand dimensions. No signup. No catch.</p>
+      </div>
+
+      <div class="audit-card reveal">
+        <div class="audit-input-row">
+          <input type="text" class="audit-input" id="domain-input" placeholder="yourdomain.com" onkeydown="if(event.key==='Enter')runAudit()" />
+          <button class="audit-btn" id="analyze-btn" onclick="runAudit()">Analyze →</button>
+        </div>
+        <div class="audit-hint">
+          <span>Examples: apple.com · nike.com · yoursite.com</span>
+          <span class="live-tag"><span class="live-dot"></span> Fetches your real HTML</span>
+        </div>
+
+        <!-- Empty state -->
+        <div id="audit-empty" class="audit-empty">
+          <p>We'll fetch your live site, parse its HTML, and score it across<br>
+          <strong>SEO Foundation · Visual Identity · Brand Clarity · Content Strategy · Online Presence</strong></p>
+        </div>
+
+        <!-- Loading -->
+        <div id="audit-loading" class="audit-loading">
+          <div class="load-steps">
+            <div class="load-step" id="step-fetch"><span class="step-spin"></span> Fetching website…</div>
+            <div class="load-step" id="step-seo"><span class="step-icon">🏷️</span> Scanning SEO…</div>
+            <div class="load-step" id="step-brand"><span class="step-icon">✨</span> Brand clarity…</div>
+            <div class="load-step" id="step-content"><span class="step-icon">📝</span> Content depth…</div>
+            <div class="load-step" id="step-visual"><span class="step-icon">🎨</span> Visual identity…</div>
+            <div class="load-step" id="step-online"><span class="step-icon">🌍</span> Online presence…</div>
+          </div>
+          <div class="fetch-status" id="fetch-status"></div>
+        </div>
+
+        <!-- Fallback: email or paste source -->
+        <div id="fallback-box" class="fallback-box">
+          <div class="fallback-title">This site blocks automated requests</div>
+          <div class="fallback-desc">Two ways to still get your audit:</div>
+
+          <!-- Option A: easiest, mobile-friendly -->
+          <div class="fallback-option fallback-option-mail">
+            <span class="option-label">Option A — Easiest (works on phone)</span>
+            <p class="option-desc">Email your domain to <strong>info@neonnarrative.com</strong> — we'll send your full audit within 1 business day.</p>
+            <a id="audit-mail-btn" href="mailto:info@neonnarrative.com?subject=Brand%20Audit%20Request" class="audit-btn">Email Audit Request →</a>
+          </div>
+
+          <div class="fallback-divider"><span>OR</span></div>
+
+          <!-- Option B: self-serve paste (desktop) -->
+          <div class="fallback-option">
+            <span class="option-label">Option B — Self-serve (best on desktop)</span>
+            <p class="option-desc">Paste your page source and we'll analyze it instantly.</p>
+
+            <div class="instructions-block">
+              <div class="instructions-tabs">
+                <button class="instr-tab active" data-tab="desktop" onclick="switchInstrTab('desktop')">💻 Desktop</button>
+                <button class="instr-tab" data-tab="mobile" onclick="switchInstrTab('mobile')">📱 Mobile</button>
+              </div>
+
+              <div class="instr-panel active" id="instr-desktop">
+                <div class="steps-grid">
+                  <div class="fb-step"><span class="step-num">1</span><div class="fb-step-text">Open your site in a browser tab</div></div>
+                  <div class="fb-step"><span class="step-num">2</span><div class="fb-step-text">Press <span class="kbd">Ctrl+U</span> (Win) or <span class="kbd">⌘⌥U</span> (Mac)</div></div>
+                  <div class="fb-step"><span class="step-num">3</span><div class="fb-step-text">Press <span class="kbd">Ctrl+A</span> then <span class="kbd">Ctrl+C</span> to copy</div></div>
+                  <div class="fb-step"><span class="step-num">4</span><div class="fb-step-text">Paste below and tap Analyze</div></div>
+                </div>
+              </div>
+
+              <div class="instr-panel" id="instr-mobile">
+                <div class="steps-grid">
+                  <div class="fb-step"><span class="step-num">1</span><div class="fb-step-text">In your browser address bar, type <span class="kbd">view-source:</span> before your URL <em>(e.g. <span class="kbd">view-source:apple.com</span>)</em></div></div>
+                  <div class="fb-step"><span class="step-num">2</span><div class="fb-step-text">Long-press the page → tap <strong>Select All</strong> → <strong>Copy</strong></div></div>
+                  <div class="fb-step"><span class="step-num">3</span><div class="fb-step-text">Come back here, tap the box below, paste, and tap Analyze</div></div>
+                  <div class="fb-step"><span class="step-num">↺</span><div class="fb-step-text">Stuck? Use <strong>Option A</strong> above — we'll do it for you.</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="paste-row">
+              <textarea class="paste-area" id="html-paste" placeholder="Paste your full page HTML here…"></textarea>
+              <button class="audit-btn" onclick="analyzeFromPaste()" style="flex-shrink:0;">Analyze →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div id="audit-results" class="audit-results">
+          <div class="overall-band">
+            <div class="score-ring" id="score-ring">
+              <div class="score-inner" id="score-num">—</div>
+            </div>
+            <div class="overall-info">
+              <div class="grade" id="score-grade">—</div>
+              <div class="grade-label">Overall Brand Score</div>
+              <div class="domain-shown" id="score-domain"></div>
+              <div class="source-pill" id="source-pill"></div>
+            </div>
+            <div class="overall-summary">
+              <div class="summary-text" id="summary-text"></div>
+            </div>
+          </div>
+
+          <div class="metrics-grid" id="metrics-grid"></div>
+
+          <div class="recs" id="recs-block" style="display:none">
+            <div class="recs-title">⚡ Top Priorities to Fix</div>
+            <div id="recs-list"></div>
+          </div>
+
+          <div class="cta-row">
+            <a id="audit-cta-btn" class="btn-primary audit-cta" href="contact.html">Book a Strategy Call →</a>
+            <button class="reset-btn" onclick="resetAudit()">← New domain</button>
+          </div>
+          <p class="disclaimer">Full audit covers 40+ signals with a custom growth roadmap and competitor benchmarking.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── PROBLEM ──────────────────────── -->
+  <section id="problem">
+    <div class="container">
+      <div class="problem-inner">
+        <span class="tag reveal">The Real Problem</span>
+        <h2 class="problem-headline reveal">Your Competitors Are Already <br>Using AI. Are You?</h2>
+        <div class="problem-body">
+          <p class="reveal">A slow website costs clients. An unanswered lead costs revenue. A missed follow-up costs growth. We fix the front door and the engine behind it.</p>
+        </div>
+        <div class="problem-cta reveal">
+          <a href="services.html" class="btn-ghost-link">See the full breakdown →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── FINAL CTA ─────────────────────── -->
+  <section id="cta-final">
+    <div class="container">
+      <div class="cta-final-inner">
+        <h2 class="section-headline reveal">You Don't Need More Tools.<br>You Need a System That Runs.</h2>
+        <p class="cta-final-sub reveal">Let's find out exactly where AI and automation can move the needle for your business — in one focused conversation.</p>
+        <a href="contact.html" class="btn-primary reveal">Book a Free Strategy Call</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── FOOTER ───────────────────────── -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-main">
+        <a href="index.html" class="footer-wordmark">Neon Narrative</a>
+        <ul class="footer-links">
+          <li><a href="services.html">Services</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+        <a href="contact.html" class="btn-primary" style="padding:8px 20px;">Book a Session</a>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2025 Neon Narrative. All rights reserved.</p>
+        <div class="footer-socials">
+          <a href="https://www.linkedin.com/in/neon-narrative-640b92405" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="social-link">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/neonnarrativemedia" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-link">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.25.07 1.62.07 4.81s0 3.56-.07 4.81c-.15 3.22-1.66 4.77-4.92 4.92-1.25.06-1.62.07-4.85.07s-3.6 0-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.07-1.25-.07-1.62-.07-4.81s0-3.56.07-4.81C3.23 3.96 4.74 2.42 8 2.27 9.25 2.21 9.62 2.2 12 2.2zm0 1.8c-3.17 0-3.55.01-4.78.07-2.4.11-3.51 1.24-3.62 3.62-.06 1.23-.07 1.6-.07 4.71s.01 3.48.07 4.71c.11 2.39 1.22 3.51 3.62 3.62 1.23.06 1.61.07 4.78.07s3.55-.01 4.78-.07c2.4-.11 3.51-1.23 3.62-3.62.06-1.23.07-1.6.07-4.71s-.01-3.48-.07-4.71c-.11-2.39-1.22-3.51-3.62-3.62C15.55 4.01 15.17 4 12 4zm0 3.07A4.93 4.93 0 1 1 7.07 12 4.93 4.93 0 0 1 12 7.07zm0 8.13A3.2 3.2 0 1 0 8.8 12 3.2 3.2 0 0 0 12 15.2zm6.4-8.33a1.15 1.15 0 1 1-1.15-1.15 1.15 1.15 0 0 1 1.15 1.15z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─────────────────────────── JAVASCRIPT ───────────────────── -->
+  <script>
+    /* ── Intro overlay ─────────────────────────────────────── */
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobileViewport     = window.matchMedia('(max-width: 767px)').matches;
+    let introActive = !prefersReducedMotion && !isMobileViewport;
+
+    (function () {
+      if (!introActive) return;
+
+      const overlay = document.getElementById('intro-overlay');
+      const video   = document.getElementById('intro-video');
+      const skipBtn = document.getElementById('intro-skip');
+      const navEl   = document.getElementById('nav');
+
+      /* Lock scroll + hide nav */
+      document.body.style.overflow = 'hidden';
+      navEl.classList.add('intro-hidden');
+
+      /* Fade in skip button after 1.5 s */
+      const skipTimer = setTimeout(() => skipBtn.classList.add('visible'), 1500);
+
+      function dismiss() {
+        if (!introActive) return;
+        introActive = false;
+        clearTimeout(skipTimer);
+
+        /* Hand off to hero background video — sync time so the loop feels continuous */
+        const heroBg = document.getElementById('hero-bg-video');
+        if (heroBg) {
+          try {
+            heroBg.currentTime = video.currentTime % (heroBg.duration || video.duration || 0) || 0;
+          } catch (_) { /* ignore */ }
+          const p = heroBg.play();
+          if (p !== undefined) p.catch(function () {});
+        }
+
+        overlay.classList.add('dismissing');
+
+        overlay.addEventListener('transitionend', function onEnd(e) {
+          if (e.target !== overlay) return;
+          overlay.removeEventListener('transitionend', onEnd);
+          overlay.style.display = 'none';
+          document.body.style.overflow = '';
+
+          /* Reveal nav */
+          navEl.classList.remove('intro-hidden');
+
+          /* Animate hero .reveal elements with stagger */
+          document.querySelectorAll('#hero .reveal').forEach(function (el, idx) {
+            setTimeout(function () { el.classList.add('visible'); }, idx * 80);
+          });
+        });
+      }
+
+      video.addEventListener('ended', dismiss);
+      skipBtn.addEventListener('click', dismiss);
+
+      /* Escape key dismisses */
+      document.addEventListener('keydown', function onKey(e) {
+        if (e.key === 'Escape') {
+          document.removeEventListener('keydown', onKey);
+          dismiss();
+        }
+      });
+
+      /* Autoplay fallback — if browser blocks, skip immediately */
+      var playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function () { dismiss(); });
+      }
+    })();
+
+    /* ── Nav scroll behavior ────────────────────────────────── */
+    const nav = document.getElementById('nav');
+    const scrollIndicator = document.getElementById('scrollIndicator');
+    let scrolled = false;
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+
+      if (y > 80 && !scrolled) {
+        nav.classList.add('scrolled');
+        scrolled = true;
+      } else if (y <= 80 && scrolled) {
+        nav.classList.remove('scrolled');
+        scrolled = false;
+      }
+
+      if (y > 60) {
+        scrollIndicator.classList.add('hidden');
+      } else {
+        scrollIndicator.classList.remove('hidden');
+      }
+    }, { passive: true });
+
+    /* ── Hamburger / overlay nav ────────────────────────────── */
+    const hamburger   = document.getElementById('hamburger');
+    const navOverlay  = document.getElementById('nav-overlay');
+    const overlayLinks = document.querySelectorAll('.overlay-link');
+
+    hamburger.addEventListener('click', () => {
+      const open = navOverlay.classList.toggle('open');
+      hamburger.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+
+    overlayLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navOverlay.classList.remove('open');
+        hamburger.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    });
+
+    /* ── Scroll reveal (IntersectionObserver) ───────────────── */
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+
+        /* Hold hero elements until intro finishes; dismiss() will animate them */
+        if (introActive && entry.target.closest('#hero')) {
+          observer.unobserve(entry.target);
+          return;
+        }
+
+        /* stagger siblings */
+        const parent = entry.target.parentElement;
+        const siblings = Array.from(parent.querySelectorAll(':scope > .reveal'));
+        const idx = siblings.indexOf(entry.target);
+
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, idx * 80);
+
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach(el => observer.observe(el));
+
+    /* ── Trust marquee (mobile only) ────────────────────────── */
+    (function setupTrustMarquee() {
+      const mq = window.matchMedia('(max-width: 767px)');
+      const tags = document.querySelector('.trust-tags');
+      if (!tags) return;
+
+      const original = Array.from(tags.children);
+      let activated = false;
+
+      function activate() {
+        if (activated) return;
+        if (!mq.matches) return;
+        original.forEach(node => {
+          const clone = node.cloneNode(true);
+          clone.setAttribute('aria-hidden', 'true');
+          tags.appendChild(clone);
+        });
+        tags.classList.add('is-marquee');
+        activated = true;
+      }
+      activate();
+      mq.addEventListener && mq.addEventListener('change', activate);
+    })();
+
+    /* ── Brand Audit Tool ───────────────────────────────────── */
+    const CTA_URL    = 'contact.html';
+    const CORS_PROXY = 'https://api.allorigins.win/get?url=';
+    let currentDomain = '';
+
+    function setStep(id, state) {
+      const el = document.getElementById(id); if (!el) return;
+      el.classList.remove('active', 'done');
+      if (state === 'active') el.classList.add('active');
+      if (state === 'done') {
+        el.classList.add('done');
+        const ic = el.querySelector('.step-spin, .step-icon');
+        if (ic) ic.textContent = '✓';
+      }
+    }
+
+    function showOnly(...ids) {
+      ['audit-empty','audit-loading','fallback-box','audit-results'].forEach(id =>
+        document.getElementById(id).style.display = 'none'
+      );
+      ids.forEach(id => document.getElementById(id).style.display = 'block');
+    }
+
+    function switchInstrTab(tab) {
+      document.querySelectorAll('.instr-tab').forEach(t =>
+        t.classList.toggle('active', t.dataset.tab === tab)
+      );
+      document.querySelectorAll('.instr-panel').forEach(p =>
+        p.classList.toggle('active', p.id === 'instr-' + tab)
+      );
+    }
+
+    function updateMailLink() {
+      const domain = (document.getElementById('domain-input').value || '').trim();
+      const link = document.getElementById('audit-mail-btn');
+      if (!link) return;
+      const subject = domain
+        ? `Brand Audit Request — ${domain}`
+        : 'Brand Audit Request';
+      const body = domain
+        ? `Hi Neon Narrative,\n\nPlease run a full brand audit for: ${domain}\n\nThanks!`
+        : 'Hi Neon Narrative,\n\nPlease run a full brand audit for my site.\n\nThanks!';
+      link.href = 'mailto:info@neonnarrative.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    }
+
+    function resetAudit() {
+      showOnly('audit-empty');
+      document.getElementById('html-paste').value = '';
+      document.getElementById('domain-input').value = '';
+      document.getElementById('analyze-btn').disabled = false;
+      document.getElementById('domain-input').focus();
+    }
+
+    async function tryFetch(domain) {
+      const variants = [
+        'https://' + domain,
+        'https://www.' + domain,
+        'http://'  + domain,
+      ];
+
+      for (const targetUrl of variants) {
+        document.getElementById('fetch-status').textContent = 'Trying ' + targetUrl + '…';
+        try {
+          const proxyUrl = CORS_PROXY + encodeURIComponent(targetUrl);
+          const res  = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+          if (!res.ok) continue;
+          const data = await res.json();
+          const html = data.contents || data.body || data.html || (typeof data === 'string' ? data : '');
+          if (html && html.length > 300) return { html, url: targetUrl };
+        } catch(e) { /* try next variant */ }
+      }
+      return null;
+    }
+
+    async function runAudit() {
+      const raw = document.getElementById('domain-input').value.trim();
+      if (!raw) { document.getElementById('domain-input').focus(); return; }
+
+      currentDomain = raw.replace(/^https?:\/\//,'').replace(/\/.*$/,'').trim();
+      document.getElementById('analyze-btn').disabled = true;
+
+      showOnly('audit-loading');
+      ['step-fetch','step-seo','step-brand','step-content','step-visual','step-online'].forEach(id => setStep(id, 'idle'));
+      setStep('step-fetch', 'active');
+
+      const result = await tryFetch(currentDomain);
+      document.getElementById('fetch-status').textContent = '';
+
+      if (!result) {
+        document.getElementById('analyze-btn').disabled = false;
+        updateMailLink();
+        showOnly('fallback-box');
+        return;
+      }
+
+      setStep('step-fetch', 'done');
+      await runAnalysisSteps();
+      renderResults(result.html, 'live');
+    }
+
+    async function analyzeFromPaste() {
+      const html = document.getElementById('html-paste').value.trim();
+      if (!html || html.length < 200) {
+        const ta = document.getElementById('html-paste');
+        ta.classList.add('error');
+        setTimeout(() => ta.classList.remove('error'), 600);
+        ta.focus(); return;
+      }
+      showOnly('audit-loading');
+      ['step-fetch','step-seo','step-brand','step-content','step-visual','step-online'].forEach(id => setStep(id, 'idle'));
+      setStep('step-fetch', 'done');
+      await runAnalysisSteps();
+      renderResults(html, 'manual');
+    }
+
+    async function runAnalysisSteps() {
+      for (const id of ['step-seo','step-brand','step-content','step-visual','step-online']) {
+        setStep(id, 'active');
+        await new Promise(r => setTimeout(r, 320));
+        setStep(id, 'done');
+      }
+      await new Promise(r => setTimeout(r, 150));
+    }
+
+    function analyzeWebsite(html, url) {
+      let doc = null;
+      try { doc = new DOMParser().parseFromString(html, 'text/html'); } catch(e) {}
+
+      const get  = sel => doc ? doc.querySelector(sel) : null;
+      const getA = sel => doc ? Array.from(doc.querySelectorAll(sel)) : [];
+      const bodyText = (doc && doc.body) ? doc.body.textContent : html.replace(/<[^>]*>/g,' ');
+
+      let seo = 0; const seoF = [];
+      if (url.startsWith('https://')) { seo += 15; seoF.push({ ok:true,  t:'HTTPS enabled' }); }
+      else                            {            seoF.push({ ok:false, t:'Not using HTTPS — major ranking penalty' }); }
+
+      const titleEl  = get('title');
+      const titleTxt = titleEl ? titleEl.textContent.trim() : '';
+      if (titleTxt) {
+        seo += 10;
+        const tl = titleTxt.length;
+        if (tl >= 30 && tl <= 65) { seo += 5; seoF.push({ ok:true, t:`Title optimal (${tl} chars): "${titleTxt.substring(0,48)}…"` }); }
+        else if (tl < 30)         {            seoF.push({ ok:true, t:`Title found but short (${tl} chars — ideal: 30–65)` }); }
+        else                      {            seoF.push({ ok:true, t:`Title found but long (${tl} chars — may truncate in SERPs)` }); }
+      } else { seoF.push({ ok:false, t:'No <title> tag found' }); }
+
+      const metaDescEl  = get('meta[name="description"]');
+      const descContent = metaDescEl ? (metaDescEl.getAttribute('content') || '') : '';
+      if (descContent) {
+        seo += 15;
+        const dl = descContent.length;
+        if (dl >= 120 && dl <= 165) { seo += 5; seoF.push({ ok:true, t:`Meta description optimal (${dl} chars)` }); }
+        else                        {            seoF.push({ ok:true, t:`Meta description present (${dl} chars — ideal: 120–165)` }); }
+      } else { seoF.push({ ok:false, t:'No meta description — snippet opportunity missed' }); }
+
+      const h1El = get('h1');
+      if (h1El) { seo += 10; seoF.push({ ok:true, t:`H1: "${h1El.textContent.trim().substring(0,55)}${h1El.textContent.trim().length > 55 ? '…' : ''}"` }); }
+      else      {             seoF.push({ ok:false, t:'No H1 tag — critical for page hierarchy' }); }
+
+      if (get('link[rel="canonical"]')) { seo += 8; seoF.push({ ok:true, t:'Canonical URL tag present' }); }
+      else                              {            seoF.push({ ok:false, t:'No canonical tag — duplicate content risk' }); }
+
+      const ogT = get('meta[property="og:title"]'), ogD = get('meta[property="og:description"]');
+      if (ogT && ogD)      { seo += 8; seoF.push({ ok:true, t:'Open Graph title + description set' }); }
+      else if (ogT || ogD) { seo += 4; seoF.push({ ok:true, t:'Partial Open Graph tags — add both' }); }
+      else                 {           seoF.push({ ok:false, t:'No Open Graph tags — social shares will look broken' }); }
+
+      if (get('script[type="application/ld+json"]')) { seo += 14; seoF.push({ ok:true, t:'Structured data (JSON-LD / Schema.org) found' }); }
+      else { seoF.push({ ok:false, t:'No Schema.org markup — missing rich result eligibility' }); }
+
+      if (get('meta[name="viewport"]')) { seo += 10; seoF.push({ ok:true, t:'Viewport meta tag — mobile-ready' }); }
+      else { seoF.push({ ok:false, t:'No viewport meta — site may break on mobile' }); }
+
+      let vis = 0; const visF = [];
+      if (get('link[rel="icon"],link[rel="shortcut icon"],link[rel="apple-touch-icon"]')) { vis += 18; visF.push({ ok:true, t:'Favicon configured' }); }
+      else { visF.push({ ok:false, t:'No favicon — hurts brand recognition in browser tabs' }); }
+
+      if (get('meta[property="og:image"]')) { vis += 22; visF.push({ ok:true, t:'OG image set — social shares will look great' }); }
+      else { visF.push({ ok:false, t:'No OG image — social shares appear blank' }); }
+
+      if (/fonts\.googleapis\.com|fonts\.gstatic\.com|@font-face|typekit|fonts\.bunny\.net/i.test(html)) { vis += 18; visF.push({ ok:true, t:'Custom web fonts loaded' }); }
+      else { visF.push({ ok:false, t:'No custom fonts — likely using system defaults' }); }
+
+      if (getA('img[src*="logo" i],img[class*="logo" i],img[alt*="logo" i],svg[class*="logo" i]').length > 0) { vis += 20; visF.push({ ok:true, t:'Logo element found in HTML' }); }
+      else { visF.push({ ok:false, t:'No logo element detected (no img/svg with "logo" in name)' }); }
+
+      const cssCount = getA('link[rel="stylesheet"]').length;
+      if (cssCount > 0 || html.includes('<style')) { vis += 12; visF.push({ ok:true, t:`${cssCount} external stylesheet(s) loaded` }); }
+
+      if (/animation|transition|@keyframe/i.test(html)) { vis += 10; visF.push({ ok:true, t:'CSS animations/transitions — polished UX' }); }
+
+      let brand = 0; const brandF = [];
+      if (titleTxt.length > 15) { brand += 18; brandF.push({ ok:true, t:'Brand title present and descriptive' }); }
+      else { brandF.push({ ok:false, t:'Title too short or missing' }); }
+
+      if (descContent.length > 60) { brand += 20; brandF.push({ ok:true, t:'Value proposition in meta description' }); }
+      else { brandF.push({ ok:false, t:'No clear value proposition in meta description' }); }
+
+      const ctaWords = ['get started','start free','book a','schedule','contact us','get a quote','free trial','try free','sign up','get in touch','request a','book a call','talk to us','learn more'];
+      const bodyLower = bodyText.toLowerCase();
+      const foundCTAs = ctaWords.filter(w => bodyLower.includes(w));
+      if (foundCTAs.length >= 2)       { brand += 25; brandF.push({ ok:true,  t:`${foundCTAs.length} CTAs found: "${foundCTAs.slice(0,2).join('", "')}"` }); }
+      else if (foundCTAs.length === 1) { brand += 12; brandF.push({ ok:true,  t:`1 CTA found: "${foundCTAs[0]}" — add more` }); }
+      else                             {              brandF.push({ ok:false, t:'No clear CTAs — conversions being missed' }); }
+
+      if (h1El && h1El.textContent.trim().length > 8) { brand += 22; brandF.push({ ok:true, t:'Main headline present and substantive' }); }
+      else { brandF.push({ ok:false, t:'Weak or missing H1 — unclear brand promise' }); }
+
+      if (/testimonial|review|clients say|said about|what our/i.test(html)) { brand += 15; brandF.push({ ok:true, t:'Social proof / testimonials detected' }); }
+      else { brandF.push({ ok:false, t:'No testimonials — missing trust signals' }); }
+
+      let cont = 0; const contF = [];
+      const wordCount = bodyText.split(/\s+/).filter(w => w.length > 2).length;
+      if (wordCount > 1200)     { cont += 22; contF.push({ ok:true,  t:`Rich content (~${Math.round(wordCount/100)*100}+ words)` }); }
+      else if (wordCount > 500) { cont += 14; contF.push({ ok:true,  t:`Some content (~${Math.round(wordCount/100)*100} words)` }); }
+      else                      {             contF.push({ ok:false, t:`Thin content (~${wordCount} words) — weak for SEO` }); }
+
+      const h2c = getA('h2').length, h3c = getA('h3').length;
+      if (h2c >= 4)      { cont += 20; contF.push({ ok:true, t:`Strong structure: ${h2c} H2s + ${h3c} H3s` }); }
+      else if (h2c >= 2) { cont += 12; contF.push({ ok:true, t:`${h2c} H2 headings — could add more` }); }
+      else               {             contF.push({ ok:false, t:'Very few subheadings — poor scannability' }); }
+
+      const navTexts = getA('nav a, header a').map(a => a.textContent.toLowerCase().trim());
+      const hasBlog  = navTexts.some(t => /blog|news|insight|article|resource/i.test(t)) || /blog|insights|articles/i.test(html);
+      const hasAbout = navTexts.some(t => /about|story|team/i.test(t));
+      const hasSvc   = navTexts.some(t => /service|solution|work|product|offering/i.test(t));
+
+      if (hasBlog)  { cont += 22; contF.push({ ok:true,  t:'Blog/insights section — great for SEO' }); }
+      else          {             contF.push({ ok:false, t:'No blog section — major organic traffic gap' }); }
+      if (hasAbout) { cont += 10; contF.push({ ok:true,  t:'About page linked in nav' }); }
+      else          {             contF.push({ ok:false, t:'No About page in nav' }); }
+      if (hasSvc)   { cont += 14; contF.push({ ok:true,  t:'Services page linked in nav' }); }
+      else          {             contF.push({ ok:false, t:'No services section in navigation' }); }
+
+      if (/case stud|portfolio|our work|results we/i.test(html)) { cont += 12; contF.push({ ok:true, t:'Case studies/portfolio section detected' }); }
+
+      let pres = 0; const presF = [];
+      const socials = [
+        { name:'LinkedIn',  pat:/linkedin\.com\//i },
+        { name:'Twitter/X', pat:/twitter\.com\/|x\.com\//i },
+        { name:'Instagram', pat:/instagram\.com\//i },
+        { name:'Facebook',  pat:/facebook\.com\//i },
+        { name:'YouTube',   pat:/youtube\.com\//i },
+        { name:'TikTok',    pat:/tiktok\.com\//i },
+      ];
+      const foundSocials = socials.filter(s => s.pat.test(html));
+      if (foundSocials.length >= 3)     { pres += 28; presF.push({ ok:true,  t:`${foundSocials.length} social profiles: ${foundSocials.map(s=>s.name).join(', ')}` }); }
+      else if (foundSocials.length > 0) { pres += 14; presF.push({ ok:true,  t:`${foundSocials.length} social: ${foundSocials.map(s=>s.name).join(', ')} — add more` }); }
+      else                              {             presF.push({ ok:false, t:'No social media links on page' }); }
+
+      if (/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/.test(html)) { pres += 18; presF.push({ ok:true, t:'Email contact address visible' }); }
+      else { presF.push({ ok:false, t:'No email address — contact friction for visitors' }); }
+
+      if (/(\+\d{1,3}[\s\-.]?)?(\(?\d{3}\)?[\s\-.]?\d{3}[\s\-.]?\d{4})/.test(html)) { pres += 14; presF.push({ ok:true, t:'Phone number on page' }); }
+      else { presF.push({ ok:false, t:'No phone number — limits trust for B2B visitors' }); }
+
+      if (/trustpilot\.com|g\.page|google\.com\/maps|clutch\.co/i.test(html)) { pres += 22; presF.push({ ok:true, t:'Third-party review platform linked' }); }
+      else if (/testimonial|review|rating/i.test(html)) { pres += 10; presF.push({ ok:true, t:'On-page testimonials present' }); }
+      else { presF.push({ ok:false, t:'No third-party reviews — weak trust signal' }); }
+
+      const hasGA  = /gtag\(|googletagmanager|google-analytics/i.test(html);
+      const hasFBP = /fbq\(|facebook\.net\/tr/i.test(html);
+      if (hasGA && hasFBP) { pres += 18; presF.push({ ok:true, t:'Google Analytics + Meta Pixel both installed' }); }
+      else if (hasGA)      { pres += 12; presF.push({ ok:true, t:'Google Analytics/GTM detected' }); }
+      else if (hasFBP)     { pres += 8;  presF.push({ ok:true, t:'Meta/Facebook Pixel installed' }); }
+      else                 {             presF.push({ ok:false, t:'No analytics tracking detected' }); }
+
+      return {
+        scores: {
+          'SEO Foundation':   Math.min(100, seo),
+          'Visual Identity':  Math.min(100, vis),
+          'Brand Clarity':    Math.min(100, brand),
+          'Content Strategy': Math.min(100, cont),
+          'Online Presence':  Math.min(100, pres),
+        },
+        findings: {
+          'SEO Foundation': seoF, 'Visual Identity': visF,
+          'Brand Clarity': brandF, 'Content Strategy': contF, 'Online Presence': presF,
+        }
+      };
+    }
+
+    function gradeInfo(s) {
+      const accent = 'oklch(82% 0.22 135)';
+      if (s >= 85) return { g:'A',  c: accent, cls:'bar-fill' };
+      if (s >= 72) return { g:'B+', c: accent, cls:'bar-fill' };
+      if (s >= 60) return { g:'B−', c: 'oklch(70% 0.18 135)', cls:'bar-fill' };
+      if (s >= 48) return { g:'C+', c: 'oklch(75% 0.16 80)',  cls:'bar-fill' };
+      return             { g:'C−', c: 'oklch(65% 0.18 25)',  cls:'bar-fill' };
+    }
+
+    function renderResults(html, source) {
+      const url = 'https://' + (currentDomain || 'your-site.com');
+      const { scores, findings } = analyzeWebsite(html, url);
+      const avg = Math.round(Object.values(scores).reduce((a,b)=>a+b,0) / 5);
+      const { g, c } = gradeInfo(avg);
+
+      document.getElementById('score-ring').style.background = `conic-gradient(${c} ${(avg/100)*360}deg, oklch(16% 0.009 70) ${(avg/100)*360}deg)`;
+      document.getElementById('score-num').textContent = avg;
+      const gradeEl = document.getElementById('score-grade');
+      gradeEl.textContent = g; gradeEl.style.color = c;
+      document.getElementById('score-domain').textContent = currentDomain || 'your site';
+
+      const pill = document.getElementById('source-pill');
+      if (source === 'live') { pill.className='source-pill pill-live'; pill.innerHTML='<span class="live-dot"></span> Live fetch'; }
+      else                   { pill.className='source-pill pill-manual'; pill.textContent='📋 Manual paste'; }
+
+      const worstEntry = Object.entries(scores).sort((a,b)=>a[1]-b[1])[0];
+      const bestEntry  = Object.entries(scores).sort((a,b)=>b[1]-a[1])[0];
+      document.getElementById('summary-text').textContent =
+        `Strongest: ${bestEntry[0]} (${bestEntry[1]}/100). Biggest opportunity: ${worstEntry[0]} (${worstEntry[1]}/100). See priorities below.`;
+
+      const ctaBtn = document.getElementById('audit-cta-btn');
+      const ctaUrl = new URL(CTA_URL, window.location.href);
+      ctaUrl.searchParams.set('domain', currentDomain);
+      ctaUrl.searchParams.set('score', avg);
+      ctaBtn.href = ctaUrl.toString();
+
+      const grid = document.getElementById('metrics-grid');
+      grid.innerHTML = '';
+      const worstMetrics = [];
+
+      Object.entries(scores).forEach(([name, score]) => {
+        const fi   = gradeInfo(score);
+        const fds  = findings[name] || [];
+        const top  = fds.slice(0,3);
+        const rest = fds.slice(3);
+        const fails = fds.filter(f => !f.ok);
+        if (fails.length) worstMetrics.push({ name, score, fails });
+
+        const card = document.createElement('div');
+        card.className = 'metric-card';
+        card.innerHTML = `
+          <div class="metric-head">
+            <span class="metric-name">${name}</span>
+            <span class="metric-badge" style="background:${fi.c}22;color:${fi.c}">${score}/100</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="bf-${name.replace(/\s/g,'')}" style="background:${fi.c}"></div></div>
+          ${top.map(f=>`<div class="finding"><span class="ico">${f.ok?'✅':'⚠️'}</span>${f.t}</div>`).join('')}
+          ${rest.length ? `<button class="toggle-btn" onclick="toggleExtra(this)">+ ${rest.length} more</button><div class="extra-findings">${rest.map(f=>`<div class="finding"><span class="ico">${f.ok?'✅':'⚠️'}</span>${f.t}</div>`).join('')}</div>` : ''}
+        `;
+        grid.appendChild(card);
+      });
+
+      showOnly('audit-results');
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        Object.entries(scores).forEach(([name, score]) => {
+          const el = document.getElementById('bf-' + name.replace(/\s/g,''));
+          if (el) el.style.width = score + '%';
+        });
+      }));
+
+      worstMetrics.sort((a,b) => a.score - b.score);
+      const top3 = worstMetrics.slice(0,3).flatMap(m => m.fails.slice(0,1).map(f => ({ area: m.name, issue: f.t })));
+      if (top3.length) {
+        document.getElementById('recs-list').innerHTML = top3.map((r,i) =>
+          `<div class="rec"><div class="rec-num">${i+1}</div><div class="rec-body"><strong>${r.area}:</strong> ${r.issue}</div></div>`
+        ).join('');
+        document.getElementById('recs-block').style.display = 'block';
+      }
+
+      document.getElementById('analyze-btn').disabled = false;
+    }
+
+    function toggleExtra(btn) {
+      const d = btn.nextElementSibling;
+      const open = d.style.display === 'block';
+      d.style.display = open ? 'none' : 'block';
+      btn.textContent = open ? `+ ${d.querySelectorAll('.finding').length} more` : '− hide';
+    }
+
+    /* Default to mobile tab on touch devices, keep mail link in sync with domain */
+    (function () {
+      const isTouch = window.matchMedia('(max-width: 767px), (pointer: coarse)').matches;
+      if (isTouch) switchInstrTab('mobile');
+      const di = document.getElementById('domain-input');
+      if (di) di.addEventListener('input', updateMailLink);
+      updateMailLink();
+    })();
+  </script>
+</body>
+</html>

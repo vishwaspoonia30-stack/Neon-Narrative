@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neon Narrative — AI Operations & Digital Marketing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+    /* ── Color System ─────────────────────────────────────────── */
+    :root {
+      --dark-surface:        oklch(12% 0.015 70);
+      --dark-surface-deeper: oklch(9%  0.010 70);
+      --light-surface:       oklch(97% 0.008 85);
+      --accent:              oklch(82% 0.22  135);
+      --text-on-dark:        oklch(95% 0.005 80);
+      --text-on-dark-muted:  oklch(55% 0.008 75);
+      --text-on-light:       oklch(18% 0.010 70);
+      --text-on-light-muted: oklch(42% 0.008 75);
+      --divider-dark:        oklch(22% 0.010 70);
+      --divider-light:       oklch(88% 0.006 80);
+
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'Inter', sans-serif;
+
+      --section-pad-v:  120px;
+      --section-pad-vm: 72px;
+      --max-w:          1200px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-on-dark);
+      background: var(--dark-surface);
+      overflow-x: hidden;
+    }
+
+    /* ── Utility ──────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: 40px;
+    }
+
+    .tag {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .section-headline {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(32px, 4vw, 48px);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 15px;
+      background: var(--accent);
+      color: var(--dark-surface);
+      padding: 12px 28px;
+      border-radius: 4px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px oklch(82% 0.22 135 / 0.35);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ── Scroll Reveal ────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       1. NAV
+    ────────────────────────────────────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 20px 0;
+      transition: background 300ms ease-out, border-color 300ms ease-out, backdrop-filter 300ms ease-out;
+      border-bottom: 1px solid transparent;
+    }
+    #nav.scrolled {
+      background: var(--dark-surface);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: var(--divider-dark);
+      padding: 14px 0;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-wordmark {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--text-on-dark);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text-on-dark-muted);
+      text-decoration: none;
+      transition: color 150ms;
+    }
+    .nav-links a:hover { color: var(--text-on-dark); }
+
+    /* hamburger */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 1100;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--text-on-dark);
+      border-radius: 2px;
+      transition: transform 300ms ease, opacity 300ms ease;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* overlay */
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--dark-surface);
+      z-index: 1050;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+    }
+    .nav-overlay.open { display: flex; }
+    .nav-overlay a {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 32px;
+      color: var(--text-on-dark);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-overlay a:hover { color: var(--accent); }
+
+    /* ──────────────────────────────────────────────────────────
+       2. HERO
+    ────────────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      background: var(--dark-surface);
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-inner {
+      position: relative;
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: 40px;
+      padding-top: 100px;
+      padding-bottom: 80px;
+    }
+
+    .hero-content {
+      max-width: 580px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(44px, 6vw, 80px);
+      letter-spacing: -0.03em;
+      line-height: 1.0;
+      color: var(--text-on-dark);
+      margin-bottom: 20px;
+    }
+
+    .hero-sub {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 1.6;
+      color: var(--text-on-dark-muted);
+      max-width: 480px;
+      margin-bottom: 36px;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn-ghost {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-on-dark-muted);
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 150ms;
+      position: relative;
+    }
+    .btn-ghost::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 1px;
+      background: var(--text-on-dark-muted);
+      transform: scaleX(0);
+      transition: transform 150ms;
+    }
+    .btn-ghost:hover { color: var(--text-on-dark); }
+    .btn-ghost:hover::after { transform: scaleX(1); }
+
+    /* decorative circles */
+    .hero-decor {
+      position: absolute;
+      right: 80px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 320px;
+      height: 320px;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .hero-decor .circle-outer {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid oklch(82% 0.22 135 / 0.15);
+    }
+    .hero-decor .circle-inner {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-40%, -60%);
+      border-radius: 50%;
+      border: 1px solid oklch(82% 0.22 135 / 0.15);
+    }
+
+    /* scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 1;
+      transition: opacity 300ms;
+    }
+    .scroll-indicator.hidden { opacity: 0; pointer-events: none; }
+    .scroll-indicator span {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-on-dark-muted);
+    }
+    .scroll-arrow {
+      width: 20px;
+      height: 20px;
+      border-right: 2px solid var(--text-on-dark-muted);
+      border-bottom: 2px solid var(--text-on-dark-muted);
+      transform: rotate(45deg);
+      animation: bounce 1.4s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(5px); }
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       3. TRUST BAR
+    ────────────────────────────────────────────────────────── */
+    #trust {
+      background: oklch(16% 0.012 70);
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    .trust-label {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-on-dark-muted);
+      margin-bottom: 20px;
+    }
+
+    .trust-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .trust-tag {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--text-on-dark-muted);
+      border: 1px solid var(--divider-dark);
+      border-radius: 100px;
+      padding: 6px 18px;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       4. WHAT WE DO — 3 PILLARS
+    ────────────────────────────────────────────────────────── */
+    #pillars {
+      background: var(--light-surface);
+      padding: var(--section-pad-v) 0;
+    }
+
+    .pillars-header {
+      margin-bottom: 64px;
+    }
+    .pillars-header .section-headline {
+      color: var(--text-on-light);
+      max-width: 640px;
+    }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+
+    .pillar {
+      padding: 40px 40px 40px 0;
+      border-bottom: 1px solid var(--divider-light);
+      position: relative;
+    }
+    .pillar:not(:last-child) {
+      padding-right: 48px;
+      margin-right: 48px;
+      border-right: 1px solid var(--divider-light);
+    }
+
+    .pillar-number {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 64px;
+      line-height: 1;
+      color: oklch(82% 0.22 135 / 0.20);
+      margin-bottom: 8px;
+      display: block;
+      letter-spacing: -0.04em;
+    }
+
+    .pillar-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--text-on-light);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .pillar-body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      color: var(--text-on-light-muted);
+      line-height: 1.65;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       5. ROI CALCULATOR
+    ────────────────────────────────────────────────────────── */
+    #roi {
+      background: var(--light-surface);
+      padding: var(--section-pad-v) 0;
+      border-top: 1px solid var(--divider-light);
+    }
+
+    .roi-header { margin-bottom: 48px; }
+    .roi-header .section-headline { color: var(--text-on-light); }
+    .roi-sub {
+      font-size: 18px;
+      color: var(--text-on-light-muted);
+      margin-top: 12px;
+    }
+
+    .roi-widget {
+      background: var(--dark-surface);
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 680px;
+      margin-inline: auto;
+    }
+
+    .slider-group {
+      margin-bottom: 28px;
+    }
+
+    .slider-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .slider-label {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-on-dark-muted);
+    }
+    .slider-value {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    /* Custom slider */
+    .roi-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--divider-dark);
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+    }
+    .roi-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px oklch(82% 0.22 135 / 0.4);
+      cursor: pointer;
+      transition: box-shadow 150ms;
+    }
+    .roi-slider::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 18px oklch(82% 0.22 135 / 0.65);
+    }
+    .roi-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px oklch(82% 0.22 135 / 0.4);
+      border: none;
+      cursor: pointer;
+    }
+
+    /* slider fill via CSS custom property updated by JS */
+    .roi-slider {
+      background: linear-gradient(
+        to right,
+        var(--accent) 0%,
+        var(--accent) var(--fill, 0%),
+        var(--divider-dark) var(--fill, 0%),
+        var(--divider-dark) 100%
+      );
+    }
+
+    .roi-output {
+      background: var(--dark-surface-deeper);
+      border-radius: 8px;
+      padding: 28px 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 32px;
+    }
+
+    .roi-stat-label {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-on-dark-muted);
+      margin-bottom: 8px;
+    }
+    .roi-stat-value {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 32px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .roi-stat-value.primary { color: var(--text-on-dark); }
+    .roi-stat-value.accent  { color: var(--accent); }
+
+    .roi-cta {
+      text-align: center;
+      margin-top: 40px;
+    }
+    .roi-cta-text {
+      font-size: 16px;
+      color: var(--text-on-light-muted);
+      margin-bottom: 16px;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       6. PROBLEM SECTION
+    ────────────────────────────────────────────────────────── */
+    #problem {
+      background: var(--dark-surface);
+      padding: var(--section-pad-v) 0;
+    }
+
+    .problem-inner {
+      max-width: 800px;
+    }
+
+    .problem-headline {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(36px, 4.5vw, 56px);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text-on-dark);
+      margin-bottom: 32px;
+    }
+
+    .problem-body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      color: var(--text-on-dark-muted);
+      line-height: 1.75;
+      max-width: 65ch;
+    }
+    .problem-body p + p { margin-top: 20px; }
+
+    /* ──────────────────────────────────────────────────────────
+       7. SERVICES SNAPSHOT
+    ────────────────────────────────────────────────────────── */
+    #services {
+      background: var(--light-surface);
+      padding: var(--section-pad-v) 0;
+    }
+
+    .services-header { margin-bottom: 56px; }
+    .services-header .section-headline { color: var(--text-on-light); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+    }
+
+    .service-col-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text-on-light);
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .service-list {
+      list-style: none;
+    }
+    .service-list li {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 15px;
+      color: var(--text-on-light-muted);
+      padding: 10px 0;
+      border-bottom: 1px solid var(--divider-light);
+      cursor: default;
+      transition: color 150ms;
+    }
+    .service-list li:hover { color: var(--text-on-light); }
+
+    .services-cta {
+      margin-top: 56px;
+      text-align: center;
+    }
+    .services-cta a {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 150ms;
+    }
+    .services-cta a:hover { opacity: 0.75; }
+
+    /* ──────────────────────────────────────────────────────────
+       8. FINAL CTA
+    ────────────────────────────────────────────────────────── */
+    #cta-final {
+      background: var(--dark-surface);
+      padding: var(--section-pad-v) 0;
+      text-align: center;
+    }
+
+    .cta-final-inner {
+      max-width: 640px;
+      margin-inline: auto;
+    }
+
+    .cta-final-inner .section-headline {
+      color: var(--text-on-dark);
+    }
+
+    .cta-final-sub {
+      font-size: 18px;
+      color: var(--text-on-dark-muted);
+      margin-top: 16px;
+      line-height: 1.65;
+    }
+
+    .cta-final-inner .btn-primary {
+      margin-top: 32px;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       9. FOOTER
+    ────────────────────────────────────────────────────────── */
+    #footer {
+      background: oklch(9% 0.010 70);
+      padding: 40px 0 32px;
+    }
+
+    .footer-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-wordmark {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--text-on-dark);
+      text-decoration: none;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .footer-links a {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text-on-dark-muted);
+      text-decoration: none;
+      transition: color 150ms;
+    }
+    .footer-links a:hover { color: var(--text-on-dark); }
+
+    .footer-copy {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--divider-dark);
+      text-align: center;
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-on-dark-muted);
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       RESPONSIVE
+    ────────────────────────────────────────────────────────── */
+    @media (max-width: 1199px) {
+      .hero-decor { right: 40px; }
+    }
+
+    @media (max-width: 767px) {
+      :root {
+        --section-pad-v: var(--section-pad-vm);
+      }
+
+      .container { padding-inline: 24px; }
+
+      /* nav */
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+
+      /* hero */
+      .hero-inner { padding-inline: 24px; padding-top: 120px; }
+      .hero-content { max-width: 100%; }
+      .hero-headline { font-size: 44px; }
+      .hero-decor {
+        display: none;
+      }
+
+      /* pillars */
+      .pillars-grid { grid-template-columns: 1fr; gap: 0; }
+      .pillar { padding: 32px 0; border-right: none !important; margin-right: 0 !important; }
+
+      /* services */
+      .services-grid { grid-template-columns: 1fr; gap: 40px; }
+
+      /* footer */
+      .footer-main { flex-direction: column; align-items: center; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+
+      /* roi widget */
+      .roi-widget { padding: 28px 20px; }
+      .roi-output { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─────────────────────────── NAV ─────────────────────────── -->
+  <header id="nav">
+    <div class="container nav-inner">
+      <a href="#" class="nav-wordmark">Neon Narrative</a>
+
+      <ul class="nav-links">
+        <li><a href="services.html">Services</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" class="btn-primary" style="padding:8px 20px;">Book a Call</a></li>
+      </ul>
+
+      <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- mobile overlay nav -->
+  <nav class="nav-overlay" id="nav-overlay">
+    <a href="services.html"     class="overlay-link">Services</a>
+    <a href="how-it-works.html" class="overlay-link">How It Works</a>
+    <a href="about.html"        class="overlay-link">About</a>
+    <a href="contact.html" class="btn-primary overlay-link">Book a Call</a>
+  </nav>
+
+  <!-- ─────────────────────────── HERO ─────────────────────────── -->
+  <section id="hero">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <span class="tag reveal">AI Operations &amp; Digital Growth</span>
+        <h1 class="hero-headline reveal">Where Strategy<br>Meets Automation.</h1>
+        <p class="hero-sub reveal">Growth isn't a marketing problem. It's a systems problem. We fix both.</p>
+        <div class="hero-cta-row reveal">
+          <a href="services.html" class="btn-primary">See What's Possible</a>
+          <a href="how-it-works.html" class="btn-ghost">How It Works</a>
+        </div>
+      </div>
+
+      <div class="hero-decor" aria-hidden="true">
+        <div class="circle-outer"></div>
+        <div class="circle-inner"></div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator" id="scrollIndicator">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── TRUST BAR ─────────────────────── -->
+  <section id="trust">
+    <div class="container">
+      <p class="trust-label reveal">Trusted by businesses across industries</p>
+      <div class="trust-tags">
+        <span class="trust-tag reveal">Healthcare</span>
+        <span class="trust-tag reveal">Real Estate</span>
+        <span class="trust-tag reveal">Legal</span>
+        <span class="trust-tag reveal">Fitness</span>
+        <span class="trust-tag reveal">Hospitality</span>
+        <span class="trust-tag reveal">Contracting</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── PILLARS ──────────────────────── -->
+  <section id="pillars">
+    <div class="container">
+      <div class="pillars-header">
+        <span class="tag reveal">What We Do</span>
+        <h2 class="section-headline reveal">Strategy. Automation.<br>Presence. All Connected.</h2>
+      </div>
+
+      <div class="pillars-grid">
+        <div class="pillar reveal">
+          <span class="pillar-number">01</span>
+          <h3 class="pillar-title">AI Automation</h3>
+          <p class="pillar-body">The work that never sleeps, handled by systems that don't.</p>
+        </div>
+        <div class="pillar reveal">
+          <span class="pillar-number">02</span>
+          <h3 class="pillar-title">Digital Presence</h3>
+          <p class="pillar-body">If they can't find you, they'll find someone else.</p>
+        </div>
+        <div class="pillar reveal">
+          <span class="pillar-number">03</span>
+          <h3 class="pillar-title">Growth &amp; Systems</h3>
+          <p class="pillar-body">You can't scale what you can't see. We build the visibility first.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── ROI CALCULATOR ───────────────── -->
+  <section id="roi">
+    <div class="container">
+      <div class="roi-header">
+        <span class="tag reveal">Free Tool</span>
+        <h2 class="section-headline reveal">See What Automation Is Worth<br>to Your Business.</h2>
+        <p class="roi-sub reveal">Real numbers. No obligation.</p>
+      </div>
+
+      <div class="roi-widget reveal">
+        <!-- Slider: Team Size -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="slider-label">Team Size</span>
+            <span class="slider-value" id="val-team">10</span>
+          </div>
+          <input type="range" class="roi-slider" id="slider-team" min="1" max="100" value="10" />
+        </div>
+
+        <!-- Slider: Manual Hours -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="slider-label">Manual Hours / Week (per person)</span>
+            <span class="slider-value" id="val-hours">15</span>
+          </div>
+          <input type="range" class="roi-slider" id="slider-hours" min="1" max="40" value="15" />
+        </div>
+
+        <!-- Slider: Hourly Cost -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="slider-label">Average Hourly Cost ($)</span>
+            <span class="slider-value" id="val-cost">$40</span>
+          </div>
+          <input type="range" class="roi-slider" id="slider-cost" min="10" max="150" value="40" />
+        </div>
+
+        <!-- Output -->
+        <div class="roi-output">
+          <div>
+            <p class="roi-stat-label">Hours Saved / Month</p>
+            <p class="roi-stat-value primary" id="out-hours">0</p>
+          </div>
+          <div>
+            <p class="roi-stat-label">Money Saved / Year</p>
+            <p class="roi-stat-value accent" id="out-money">$0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="roi-cta reveal">
+        <p class="roi-cta-text">Like what you see? Let's build it for you.</p>
+        <a href="contact.html" class="btn-primary">Book a Call →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── PROBLEM ──────────────────────── -->
+  <section id="problem">
+    <div class="container">
+      <div class="problem-inner">
+        <span class="tag reveal">The Real Problem</span>
+        <h2 class="problem-headline reveal">Your Competitors Are Already<br>Using AI. Are You?</h2>
+        <div class="problem-body">
+          <p class="reveal">Before a customer calls, books, or buys — they look you up. If your website is slow, your Google profile is incomplete, or your follow-up is manual, you've already lost them.</p>
+          <p class="reveal">Most businesses we work with aren't failing. They're just operating on outdated systems. A slow website costs clients. An unanswered lead costs revenue. A missed follow-up costs growth.</p>
+          <p class="reveal">We fix the front door and the engine behind it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── SERVICES ──────────────────────── -->
+  <section id="services">
+    <div class="container">
+      <div class="services-header">
+        <span class="tag reveal">Our Services</span>
+        <h2 class="section-headline reveal" style="color: var(--text-on-light);">What We Do</h2>
+      </div>
+
+      <div class="services-grid">
+        <div class="reveal">
+          <h3 class="service-col-title">AI Automation</h3>
+          <ul class="service-list">
+            <li>Speed to Lead</li>
+            <li>Follow-up &amp; Nurture</li>
+            <li>Database Reactivation</li>
+            <li>Document Processing</li>
+            <li>Internal Reporting</li>
+          </ul>
+        </div>
+        <div class="reveal">
+          <h3 class="service-col-title">Digital Presence</h3>
+          <ul class="service-list">
+            <li>Website Redesign</li>
+            <li>SEO</li>
+            <li>Google Business Profile</li>
+            <li>Online Ads</li>
+            <li>Analytics Reports</li>
+          </ul>
+        </div>
+        <div class="reveal">
+          <h3 class="service-col-title">Growth &amp; Systems</h3>
+          <ul class="service-list">
+            <li>Professional Dashboards</li>
+            <li>Product Development</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="services-cta reveal">
+        <a href="#">Explore Our Services →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── FINAL CTA ─────────────────────── -->
+  <section id="cta-final">
+    <div class="container">
+      <div class="cta-final-inner">
+        <h2 class="section-headline reveal">You Don't Need More Tools.<br>You Need a System That Runs.</h2>
+        <p class="cta-final-sub reveal">Let's find out exactly where AI and automation can move the needle for your business — in one focused conversation.</p>
+        <a href="contact.html" class="btn-primary reveal">Book a Free Strategy Call</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── FOOTER ───────────────────────── -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-main">
+        <a href="index.html" class="footer-wordmark">Neon Narrative</a>
+        <ul class="footer-links">
+          <li><a href="services.html">Services</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+        <a href="contact.html" class="btn-primary" style="padding:8px 20px;">Book a Call</a>
+      </div>
+      <p class="footer-copy">© 2025 Neon Narrative. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ─────────────────────────── JAVASCRIPT ───────────────────── -->
+  <script>
+    /* ── Nav scroll behavior ────────────────────────────────── */
+    const nav = document.getElementById('nav');
+    const scrollIndicator = document.getElementById('scrollIndicator');
+    let scrolled = false;
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+
+      if (y > 80 && !scrolled) {
+        nav.classList.add('scrolled');
+        scrolled = true;
+      } else if (y <= 80 && scrolled) {
+        nav.classList.remove('scrolled');
+        scrolled = false;
+      }
+
+      if (y > 60) {
+        scrollIndicator.classList.add('hidden');
+      } else {
+        scrollIndicator.classList.remove('hidden');
+      }
+    }, { passive: true });
+
+    /* ── Hamburger / overlay nav ────────────────────────────── */
+    const hamburger   = document.getElementById('hamburger');
+    const navOverlay  = document.getElementById('nav-overlay');
+    const overlayLinks = document.querySelectorAll('.overlay-link');
+
+    hamburger.addEventListener('click', () => {
+      const open = navOverlay.classList.toggle('open');
+      hamburger.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+
+    overlayLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navOverlay.classList.remove('open');
+        hamburger.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    });
+
+    /* ── Scroll reveal (IntersectionObserver) ───────────────── */
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          /* stagger siblings */
+          const parent = entry.target.parentElement;
+          const siblings = Array.from(parent.querySelectorAll(':scope > .reveal'));
+          const idx = siblings.indexOf(entry.target);
+
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, idx * 80);
+
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach(el => observer.observe(el));
+
+    /* ── ROI Calculator ─────────────────────────────────────── */
+    const sliderTeam  = document.getElementById('slider-team');
+    const sliderHours = document.getElementById('slider-hours');
+    const sliderCost  = document.getElementById('slider-cost');
+
+    const valTeam  = document.getElementById('val-team');
+    const valHours = document.getElementById('val-hours');
+    const valCost  = document.getElementById('val-cost');
+
+    const outHours = document.getElementById('out-hours');
+    const outMoney = document.getElementById('out-money');
+
+    let animFrame = null;
+    let debounceTimer = null;
+
+    function updateSliderFill(slider) {
+      const min = +slider.min;
+      const max = +slider.max;
+      const val = +slider.value;
+      const pct = ((val - min) / (max - min)) * 100;
+      slider.style.setProperty('--fill', pct + '%');
+    }
+
+    function countUp(el, target, prefix, suffix, duration) {
+      const start = Date.now();
+      const startVal = parseFloat(el.dataset.current || 0);
+
+      function tick() {
+        const elapsed = Date.now() - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3); /* ease-out-cubic */
+        const current = startVal + (target - startVal) * eased;
+
+        el.textContent = prefix + Math.round(current).toLocaleString() + suffix;
+
+        if (progress < 1) {
+          animFrame = requestAnimationFrame(tick);
+        } else {
+          el.dataset.current = target;
+        }
+      }
+
+      if (animFrame) cancelAnimationFrame(animFrame);
+      tick();
+    }
+
+    function recalculate() {
+      const teamSize   = +sliderTeam.value;
+      const manualHrs  = +sliderHours.value;
+      const hourlyCost = +sliderCost.value;
+
+      const hoursSavedMonth = (teamSize * manualHrs * 4) * 0.7;
+      const moneySavedYear  = hoursSavedMonth * 12 * hourlyCost;
+
+      countUp(outHours, Math.round(hoursSavedMonth), '',  '', 600);
+      countUp(outMoney, Math.round(moneySavedYear),  '$', '', 600);
+    }
+
+    function onSliderInput(slider, displayEl, prefix) {
+      updateSliderFill(slider);
+      displayEl.textContent = prefix + slider.value;
+
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(recalculate, 100);
+    }
+
+    sliderTeam.addEventListener('input',  () => onSliderInput(sliderTeam,  valTeam,  ''));
+    sliderHours.addEventListener('input', () => onSliderInput(sliderHours, valHours, ''));
+    sliderCost.addEventListener('input',  () => onSliderInput(sliderCost,  valCost,  '$'));
+
+    /* init fills + calculation */
+    [sliderTeam, sliderHours, sliderCost].forEach(updateSliderFill);
+    recalculate();
+  </script>
+</body>
+</html>
